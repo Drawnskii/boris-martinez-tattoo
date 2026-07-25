@@ -1,0 +1,32 @@
+{
+  "name": "@boris-martinez-tattoo/api",
+  "private": true,
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "check": "tsc --noEmit",
+    "lint": "eslint .",
+    "db:migrate:local": "wrangler d1 migrations apply boris-martinez-tattoo-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply boris-martinez-tattoo-db --remote"
+  },
+  "dependencies": {
+    "@boris-martinez-tattoo/core": "workspace:*",
+    "@boris-martinez-tattoo/database": "workspace:*",
+    "hono": "^4.9.9"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250825.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.7.0",
+    "globals": "^17.7.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.64.0",
+    "wrangler": "^4.37.0"
+  }
+}

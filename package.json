@@ -8,9 +8,11 @@
   "packageManager": "pnpm@11.13.1",
   "scripts": {
     "dev": "pnpm --filter @boris-martinez-tattoo/web dev",
-    "build": "pnpm --filter @boris-martinez-tattoo/web build",
+    "dev:api": "pnpm --filter @boris-martinez-tattoo/api dev",
+    "build": "pnpm -r --if-present build",
     "preview": "pnpm --filter @boris-martinez-tattoo/web preview",
     "lint": "pnpm -r --if-present lint",
-    "check": "pnpm -r --if-present check"
+    "check": "pnpm -r --if-present check",
+    "db:generate": "pnpm --filter @boris-martinez-tattoo/database db:generate"
   }
 }

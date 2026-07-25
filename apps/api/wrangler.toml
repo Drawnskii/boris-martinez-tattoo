@@ -1,0 +1,21 @@
+name = "boris-martinez-tattoo-api"
+main = "src/index.ts"
+compatibility_date = "2025-08-25"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 — create once with:  wrangler d1 create boris-martinez-tattoo-db
+# then paste the returned database_id below.
+[[d1_databases]]
+binding = "DB"
+database_name = "boris-martinez-tattoo-db"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "../../packages/database/migrations"
+
+# R2 — create once with:  wrangler r2 bucket create boris-martinez-tattoo-portfolio
+[[r2_buckets]]
+binding = "PORTFOLIO_BUCKET"
+bucket_name = "boris-martinez-tattoo-portfolio"
+
+# Non-secret config. Secrets go in .dev.vars (local) / `wrangler secret put` (prod).
+[vars]
+ADMIN_PATH = "change-me-to-a-long-random-string"

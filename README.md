@@ -1,6 +1,6 @@
 # Boris Martinez Tattoo Website
 
-Monorepo for Boris Martinez. The frontend is an [Astro](https://astro.build) + TypeScript app; a backend service will be added in later iterations alongside it. Everything is managed with [pnpm](https://pnpm.io) workspaces.
+Monorepo for Boris Martinez. The frontend is an [Astro](https://astro.build) + TypeScript app; the backend is a [Hono](https://hono.dev) app running on Cloudflare Workers, with shared code in `packages/*`. Everything is managed with [pnpm](https://pnpm.io) workspaces.
 
 > Workspace packages are scoped under `@boris-martinez-tattoo/` (e.g. `@boris-martinez-tattoo/web`).
 
@@ -10,13 +10,16 @@ Monorepo for Boris Martinez. The frontend is an [Astro](https://astro.build) + T
 
 1. [Monorepo architecture](#monorepo-architecture)
 2. [Astro project architecture (`apps/web`)](#astro-project-architecture-appsweb)
-3. [Design system (Tailwind v4)](#design-system-tailwind-v4)
-4. [Using pnpm](#using-pnpm)
-5. [Linting & type-checking](#linting--type-checking)
-6. [Editor setup (VS Code)](#editor-setup-vs-code)
-7. [Development mode](#development-mode)
-8. [Production](#production)
-9. [`apps/web` vs. `web` at the root](#appsweb-vs-web-at-the-root)
+3. [Backend architecture (`apps/api`)](#backend-architecture-appsapi)
+4. [Persistence (`packages/database`)](#persistence-packagesdatabase)
+5. [Shared contracts (`packages/core`)](#shared-contracts-packagescore)
+6. [Design system (Tailwind v4)](#design-system-tailwind-v4)
+7. [Using pnpm](#using-pnpm)
+8. [Linting & type-checking](#linting--type-checking)
+9. [Editor setup (VS Code)](#editor-setup-vs-code)
+10. [Development mode](#development-mode)
+11. [Production](#production)
+12. [`apps/web` vs. `web` at the root](#appsweb-vs-web-at-the-root)
 
 ---
 
@@ -32,11 +35,14 @@ boris-martinez-tattoo/
 ├── .gitignore
 ├── .vscode/                # committed editor config (see Editor setup)
 ├── apps/
-│   └── web/                # @boris-martinez-tattoo/web — the Astro frontend
-└── packages/               # (reserved) shared libraries consumed by several apps
+│   ├── web/                # @boris-martinez-tattoo/web — the Astro frontend (Cloudflare Pages)
+│   └── api/                # @boris-martinez-tattoo/api — Hono backend + admin SSR (Cloudflare Workers)
+└── packages/
+    ├── core/               # @boris-martinez-tattoo/core — shared TypeScript types + Zod schemas
+    └── database/           # @boris-martinez-tattoo/database — Drizzle ORM schema, migrations, D1 client
 ```
 
-- **`apps/*`** — deployable applications. The Astro site lives here now; the future backend will join it as `apps/api`.
+- **`apps/*`** — deployable applications. The Astro site and the Hono API live here.
 - **`packages/*`** — non-deployable shared libraries (utilities, shared types, UI primitives) consumed by apps through the `workspace:` protocol.
 
 ### Rules of the monorepo
@@ -50,18 +56,12 @@ boris-martinez-tattoo/
 | Command | What it does |
 | --- | --- |
 | `pnpm dev` | Start the web app in development mode |
-| `pnpm build` | Build every workspace app |
+| `pnpm dev:api` | Start the API worker locally (`wrangler dev`, port 8787) |
+| `pnpm build` | Build every workspace app (web → `dist/`, api → dry-run bundle check) |
 | `pnpm preview` | Preview the web production build locally |
 | `pnpm lint` | Lint every workspace |
-| `pnpm check` | Type-check every workspace (`astro check`) |
-
-### Adding the backend later
-
-```bash
-mkdir apps/api
-pnpm --filter "@boris-martinez-tattoo/api" init      # or cd apps/api && pnpm init, then name it @boris-martinez-tattoo/api
-pnpm install                                # from the root — re-links the workspace
-```
+| `pnpm check` | Type-check every workspace (`astro check` / `tsc --noEmit`) |
+| `pnpm db:generate` | Generate a SQL migration from `packages/database/src/schema` |
 
 ### Adding a shared library consumed by both apps
 
@@ -135,6 +135,121 @@ import type { Artist } from '@domain/artist';
 ### TypeScript
 
 The project extends `astro/tsconfigs/strict`. Pages are `.astro` files; layer logic lives in `.ts` files. The build will refuse to pass if `pnpm check` reports type errors.
+
+---
+
+## Backend architecture (`apps/api`)
+
+The API is a [Hono](https://hono.dev) app deployed on **Cloudflare Workers**. It follows the same layered architecture as the web app:
+
+```
+Presentation  →  Application  →  Domain  ←  Infrastructure
+```
+
+```
+apps/api/
+├── wrangler.toml          # Worker config: D1 + R2 bindings, migrations_dir, vars
+├── .dev.vars.example      # local secrets template (copy to .dev.vars)
+└── src/
+    ├── index.ts           # Worker entry — Hono app, route mounting
+    ├── config/            # env bindings type (env.ts)
+    ├── presentation/      # HTTP routes (Hono). Thin: parse → call use case → respond
+    │   └── routes/            # health.ts, bookings.ts
+    ├── application/       # use cases / services that orchestrate domain logic
+    │   └── bookings/          # create-booking.ts (validate → persist → schedule)
+    ├── domain/            # entities + repository *interfaces* (ports). No framework deps
+    │   └── booking/           # booking.ts: Booking, BookingRepository, AppointmentCalendar
+    └── infrastructure/    # adapters implementing the domain ports
+        ├── persistence/       # drizzle-booking-repository.ts (D1 via packages/database)
+        └── calendar/          # google-appointment-calendar.ts (Google Calendar API)
+```
+
+The dependency rule matches `apps/web`: `presentation → application → domain ← infrastructure`, and routes never touch `infrastructure` through anything but the use cases they compose.
+
+### Path aliases
+
+Defined in `apps/api/tsconfig.json` and resolved by Wrangler's bundler:
+
+| Alias | Resolves to |
+| --- | --- |
+| `@presentation/*` | `src/presentation/*` |
+| `@application/*` | `src/application/*` |
+| `@domain/*` | `src/domain/*` |
+| `@infrastructure/*` | `src/infrastructure/*` |
+| `@config/*` | `src/config/*` |
+
+### Routes (current)
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /api/health` | Liveness probe |
+| `POST /api/bookings` | Public booking request — validates with the shared Zod schema, persists to D1, schedules via Google Calendar. `422` on invalid payload |
+
+Two adapters are **stubs pending integration** (they log and no-op, clearly marked `TODO`): the Drizzle repository (waiting on the schema design, see below) and the Google Calendar client. Swap the bodies in; the ports and wiring are final.
+
+### Invisible admin panel (planned)
+
+Per the architecture PDF: the admin dashboard will be Hono JSX SSR behind `/${ADMIN_PATH}` — an unguessable route segment. Requests without a valid encrypted HTTP-only session cookie get a plain `404`; there is no public login page. The `jsx` / `jsxImportSource: hono/jsx` compiler options are already set.
+
+### Local development
+
+```bash
+cp apps/api/.dev.vars.example apps/api/.dev.vars   # fill in secrets
+pnpm db:generate                                    # only after schema changes
+pnpm --filter @boris-martinez-tattoo/api db:migrate:local
+pnpm dev:api                                        # http://localhost:8787
+```
+
+D1 and R2 run in local simulation (`workerd`) — no Cloudflare account needed for dev.
+
+---
+
+## Persistence (`packages/database`)
+
+**Cloudflare D1 (SQLite) + Drizzle ORM.** This package owns the schema, the migrations and the typed client factory; it never deploys on its own.
+
+```
+packages/database/
+├── drizzle.config.ts      # dialect sqlite, schema src/schema, out migrations/
+├── migrations/            # generated SQL — applied by wrangler, committed to git
+└── src/
+    ├── client.ts          # createDb(d1) → typed Drizzle client
+    └── schema/            # sqliteTable definitions (one file per aggregate)
+```
+
+> **The schema is not designed yet.** `src/schema/index.ts` contains a `_template`
+> table demonstrating the pattern, plus a generated `0000_*.sql` migration proving
+> the pipeline works end-to-end. Delete both when the real tables
+> (`bookings`, `portfolio_images`, …) are designed.
+
+### Migration workflow
+
+1. Edit tables in `packages/database/src/schema/`.
+2. `pnpm db:generate` — emits `migrations/NNNN_<name>.sql`.
+3. Apply from the API workspace (Wrangler reads `migrations_dir` from `wrangler.toml`):
+
+```bash
+pnpm --filter @boris-martinez-tattoo/api db:migrate:local    # local dev D1
+pnpm --filter @boris-martinez-tattoo/api db:migrate:remote   # production D1
+```
+
+Consumers never talk to D1 directly — they call `createDb(env.DB)` inside an `infrastructure` adapter.
+
+---
+
+## Shared contracts (`packages/core`)
+
+Framework-free TypeScript types and **Zod schemas** shared by `apps/web` (form validation) and `apps/api` (payload validation) — one contract, two runtimes. Currently holds the booking request schema (`bookingRequestSchema`).
+
+```ts
+import { bookingRequestSchema, type BookingRequest } from '@boris-martinez-tattoo/core';
+```
+
+Add it to any workspace with:
+
+```bash
+pnpm --filter <app> add @boris-martinez-tattoo/core --workspace
+```
 
 ---
 
@@ -418,15 +533,44 @@ PUBLIC_NAV_LAYOUT="right" PUBLIC_ASTRO_SITE="https://boris-martinez-tattoo.com" 
 
 `PUBLIC_*` variables are inlined at build time, so restart the dev server after changing them.
 
+### API
+
+```bash
+pnpm dev:api   # wrangler dev → http://localhost:8787
+```
+
+The worker simulates D1 and R2 locally. Secrets come from `apps/api/.dev.vars` (copy from `.dev.vars.example`); config vars and bindings live in `apps/api/wrangler.toml`.
+
 ---
 
 ## Production
 
-The web app builds to a **fully static site**.
+The web app builds to a **fully static site**; the API deploys as a **Cloudflare Worker**.
 
 ```bash
-pnpm build      # outputs static files to apps/web/dist/
-pnpm preview     # serve that build locally to verify it before deploying
+pnpm build      # web → apps/web/dist/  ·  api → dry-run bundle check
+pnpm preview    # serve the web build locally to verify it before deploying
+```
+
+### API deploy (Cloudflare Workers)
+
+One-time resource setup (requires `wrangler login`):
+
+```bash
+pnpm --filter @boris-martinez-tattoo/api exec wrangler d1 create boris-martinez-tattoo-db
+# → paste the returned database_id into apps/api/wrangler.toml
+pnpm --filter @boris-martinez-tattoo/api exec wrangler r2 bucket create boris-martinez-tattoo-portfolio
+pnpm --filter @boris-martinez-tattoo/api exec wrangler secret put SESSION_SECRET
+pnpm --filter @boris-martinez-tattoo/api exec wrangler secret put GOOGLE_CALENDAR_ID
+pnpm --filter @boris-martinez-tattoo/api exec wrangler secret put GOOGLE_SERVICE_ACCOUNT_KEY
+# set ADMIN_PATH in wrangler.toml [vars] to a long random string
+```
+
+Then deploy and migrate:
+
+```bash
+pnpm --filter @boris-martinez-tattoo/api deploy
+pnpm --filter @boris-martinez-tattoo/api db:migrate:remote
 ```
 
 ### Deploy

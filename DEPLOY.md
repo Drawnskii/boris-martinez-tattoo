@@ -1,5 +1,8 @@
 # Deploy Guide
 
+> This guide covers the **web frontend** (static site). For the **API worker**
+> (Cloudflare Workers + D1 + R2), see "API deploy" in [README.md](README.md#production).
+
 ## How it works
 
 GitHub Actions workflow (`.github/workflows/deploy.yml`) builds static site, deploys it. All config driven by **GitHub Variables** — no workflow edits needed to change hosting.

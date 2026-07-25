@@ -1,0 +1,10 @@
+# Copy to .dev.vars for local dev (`wrangler dev` loads it automatically).
+# In production set each with: wrangler secret put <NAME>
+
+# Encrypts the admin session cookie. Long random string.
+SESSION_SECRET=
+
+# Google Calendar API — appointment engine.
+GOOGLE_CALENDAR_ID=
+# Service-account JSON key, single line, for the Calendar API.
+GOOGLE_SERVICE_ACCOUNT_KEY=
