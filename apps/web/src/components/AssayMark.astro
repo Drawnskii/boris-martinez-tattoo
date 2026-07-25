@@ -1,0 +1,41 @@
+---
+/* -----------------------------------------------------------------
+   AssayMark — the certification stamp carried by every registered
+   piece: mono serial, placement, session date. `sealed` wraps the
+   mark in the wax-beige hallmark circle.
+   ----------------------------------------------------------------- */
+interface Props {
+  serial: string;
+  placement?: string;
+  session?: string;
+  sealed?: boolean;
+  class?: string;
+}
+
+const { serial, placement, session, sealed = false, class: className = '' } = Astro.props;
+
+const parts = [serial, placement, session].filter(Boolean);
+const mark = parts.join(' · ');
+---
+
+{
+  sealed ? (
+    <span
+      class:list={[
+        'inline-flex size-16 items-center justify-center rounded-full border border-tertiary-400/70 p-1.5 text-center font-mono text-2xs uppercase leading-tight tracking-[0.14em] text-tertiary-300',
+        className,
+      ]}
+    >
+      {mark}
+    </span>
+  ) : (
+    <span
+      class:list={[
+        'font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground',
+        className,
+      ]}
+    >
+      {mark}
+    </span>
+  )
+}

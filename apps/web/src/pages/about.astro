@@ -1,0 +1,114 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ImagePlaceholder from '@components/ImagePlaceholder.astro';
+import AssayMark from '@components/AssayMark.astro';
+import CtaButton from '@components/CtaButton.astro';
+import { BASE_URL } from '@config/site';
+---
+
+<BaseLayout title="The Artist — Boris Martinez Tattoo" description="The artist's entry — Boris Martinez, a blackwork and liquid-metal tattoo artist.">
+  <main class="shell py-16 md:py-24" style="--shell-max: 48rem">
+    {/* the artist's entry in the register: article with floated plates */}
+    <article>
+      <div class="reveal">
+        <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">Entry — The Artist</p>
+        <div class="mt-3 flex items-center gap-4">
+          <h1 class="font-secondary text-4xl tracking-[0.02em] text-foreground md:text-5xl">My story begins with a leap of faith&hellip;</h1>
+        </div>
+        <div class="mt-5 flex items-center gap-4">
+          <AssayMark serial="BM" sealed />
+          <AssayMark serial="Boris Martinez" placement="Founder" session="Blackwork" />
+        </div>
+      </div>
+
+      {/* full-width cover plate */}
+      <ImagePlaceholder label="Boris Martinez and the studio crew" class="reveal mt-10 aspect-5/6 w-full" style="--reveal-delay: 80ms" />
+
+      {/*
+        Text blocks with floated inline plates. `flow-root` contains the
+        floats; plates are full-width on mobile and float from `sm:` up.
+      */}
+      <div class="reveal mt-10 flow-root text-base leading-relaxed text-muted-foreground">
+        <ImagePlaceholder
+          label="The atelier"
+          class="mb-4 aspect-square w-full sm:float-left sm:mr-6 sm:w-2/5"
+        />
+        <p>
+          A move to Los Angeles with no plan — only an artist chasing a
+          dream. While drawing in my room one day, I had the thought that
+          perhaps I should draw around other artists. That's when I came
+          upon <a href="https://kktstudiola.com/" title="Kustom Kulture Tattoo Studio" class="text-foreground underline underline-offset-4 hover:text-tertiary-400">Kustom Kulture Tattoo Studio</a>,
+          a shop of experienced and open-handed artists. Each carried a
+          different style, and each a different goal.
+        </p>
+        <p class="mt-6">
+          From there, I was able to watch Nacho, Jade, Nancy, Ivan, Edison,
+          and Andrew work with their clients. I observed how they set up
+          and broke down their stations, sterilized their equipment,
+          consulted with clients, built relationships, and, most
+          importantly, created a safe environment for everyone. Over time,
+          by watching them carefully and learning every technique they had
+          to offer, they became some of my closest friends — close enough to
+          be considered family.
+        </p>
+      </div>
+
+      {/* full-width wide break */}
+      <ImagePlaceholder label="The studio, wide" class="reveal mt-10 aspect-21/9 w-full" />
+
+      <div class="reveal mt-10 flow-root text-base leading-relaxed text-muted-foreground">
+        <ImagePlaceholder
+          label="At the needle"
+          class="mb-4 aspect-4/5 w-full sm:float-right sm:ml-6 sm:w-1/3"
+        />
+        <p>
+          Later, they offered me an apprenticeship. I was beyond excited —
+          out of pure happiness, I gave every one of them a hug. From that
+          moment on, I was determined to learn how to provide outstanding
+          customer service, build strong relationships with both artists and
+          clients, and ultimately how to apply my art to a living canvas.
+        </p>
+        <p class="mt-6">
+          I absorbed everything they taught me, and I continue to use those
+          skills to this day. They remind me of where I started and, more
+          importantly, who helped me get there. It was an incredible
+          opportunity that I will never forget — a story I will always be
+          proud to tell.
+        </p>
+      </div>
+
+      {/* two-up half-width pair */}
+      <div class="mt-10 grid gap-4 sm:grid-cols-2">
+        <ImagePlaceholder label="Studio detail — plate 01" class="reveal aspect-3/4 w-full" />
+        <ImagePlaceholder label="Studio detail — plate 02" class="reveal aspect-3/4 w-full" style="--reveal-delay: 80ms" />
+      </div>
+
+      <div class="reveal mt-10 flow-root text-base leading-relaxed text-muted-foreground">
+        <ImagePlaceholder
+          label="Detail, struck metal"
+          class="mb-4 aspect-3/2 w-full sm:float-left sm:mr-6 sm:w-1/3"
+        />
+        <p>
+          I arrived in Los Angeles as an artist searching for an
+          opportunity. What I found was a family, mentors, and a path
+          forward. The lessons I learned there continue to guide me every
+          day, and I will always be grateful to the people who helped turn
+          my passion into a profession.
+        </p>
+      </div>
+
+      <p class="reveal mt-12 font-secondary text-lg leading-snug tracking-[0.02em] text-foreground">
+        Thank you for taking the time to read my story.
+      </p>
+    </article>
+
+    <div class="reveal mt-14 flex flex-wrap gap-3 border-t border-border pt-10">
+      <CtaButton href={`${BASE_URL}/`} variant="outline" title="Back to the home page — Boris Martinez Tattoo" class="px-6 py-3 text-xs">
+        &larr; Back to the front
+      </CtaButton>
+      <CtaButton href={`${BASE_URL}/#booking`} title="Request a custom tattoo commission" class="px-6 py-3 text-xs">
+        Request a commission
+      </CtaButton>
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,50 @@
+---
+import SectionHeading from '@components/SectionHeading.astro';
+import ImagePlaceholder from '@components/ImagePlaceholder.astro';
+import AssayMark from '@components/AssayMark.astro';
+import CtaButton from '@components/CtaButton.astro';
+import { BASE_URL } from '@config/site';
+
+// Register preview — 6 latest entries. The full register lives on /gallery.
+// Serials/placements are illustrative until real pieces are supplied.
+const entries = [
+  { serial: 'No. 042', placement: 'Forearm', session: '2026', aspect: 'aspect-[4/5]' },
+  { serial: 'No. 041', placement: 'Shoulder', session: '2026', aspect: 'aspect-square' },
+  { serial: 'No. 039', placement: 'Back', session: '2025', aspect: 'aspect-[4/5]' },
+  { serial: 'No. 037', placement: 'Calf', session: '2025', aspect: 'aspect-square' },
+  { serial: 'No. 035', placement: 'Sternum', session: '2025', aspect: 'aspect-[4/5]' },
+  { serial: 'No. 033', placement: 'Upper arm', session: '2025', aspect: 'aspect-square' },
+];
+---
+
+<section id="portfolio" class="flex min-h-svh flex-col justify-center py-16 md:py-24">
+  <div class="shell">
+    <div class="reveal">
+      <SectionHeading
+        tag="Entry I — The Work"
+        title="The register"
+        subtitle="The most recent pieces struck from the studio. Open the full register for every entry on record."
+      />
+    </div>
+
+    <div class="mt-14 grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-3">
+      {entries.map((entry, i) => (
+        <figure class="reveal group relative bg-background" style={`--reveal-delay: ${i * 60}ms`}>
+          <ImagePlaceholder label={`Piece ${entry.serial}`} class:list={[entry.aspect, 'w-full border-0']} />
+          <figcaption class="absolute inset-x-0 bottom-0 flex items-center bg-linear-to-t from-background via-background/80 to-transparent p-4 pt-8">
+            <AssayMark serial={entry.serial} placement={entry.placement} session={entry.session} />
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+
+    <div class="reveal mt-14 text-center">
+      <CtaButton href={`${BASE_URL}/gallery`} title="Browse the full tattoo portfolio register" class="px-8 py-3.5 text-sm">
+        Open the full register
+        <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14m-6-6 6 6-6 6"></path>
+        </svg>
+      </CtaButton>
+    </div>
+  </div>
+</section>

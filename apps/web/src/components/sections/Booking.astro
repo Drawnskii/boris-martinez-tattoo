@@ -1,0 +1,99 @@
+---
+import SectionHeading from '@components/SectionHeading.astro';
+
+const inputClass =
+  'w-full border border-border bg-raised px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-tertiary-400 focus:outline-none';
+---
+
+<section id="booking" class="flex min-h-svh flex-col justify-center border-t border-border bg-raised/50 py-16 md:py-24">
+  <div class="shell" style="--shell-max: 48rem">
+    <div class="reveal">
+      <SectionHeading
+        tag="Entry VI — The Request"
+        title="Request a commission"
+        subtitle="Describe the piece you want struck. The studio replies within 24–48 hours to confirm the consultation and the deposit."
+      />
+    </div>
+
+    {/* the commission slip */}
+    <form id="booking-form" class="reveal mt-14 border border-border bg-background p-6 md:p-10">
+      <div class="flex items-center justify-between border-b border-border pb-4">
+        <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">
+          Commission slip
+        </p>
+        <p class="font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
+          Boris Martinez Tattoo
+        </p>
+      </div>
+
+      <div class="mt-8 grid gap-6 sm:grid-cols-2">
+        <div>
+          <label for="booking-name" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Name</label>
+          <input id="booking-name" name="name" type="text" required placeholder="Your name" class={inputClass} />
+        </div>
+        <div>
+          <label for="booking-email" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Email</label>
+          <input id="booking-email" name="email" type="email" required placeholder="you@example.com" class={inputClass} />
+        </div>
+        <div>
+          <label for="booking-phone" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Phone (optional)</label>
+          <input id="booking-phone" name="phone" type="tel" placeholder="+00 000 000 000" class={inputClass} />
+        </div>
+        <div>
+          <label for="booking-size" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Approximate scale</label>
+          <select id="booking-size" name="size" class={inputClass}>
+            <option value="small">Class I — small (up to ~5 cm)</option>
+            <option value="medium">Class II — medium (up to ~15 cm)</option>
+            <option value="large">Class III — large / custom</option>
+            <option value="unsure">Not sure yet</option>
+          </select>
+        </div>
+        <div class="sm:col-span-2">
+          <label for="booking-idea" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">The design</label>
+          <textarea
+            id="booking-idea"
+            name="idea"
+            rows="4"
+            required
+            placeholder="Describe the design, placement, references..."
+            class={inputClass}
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
+        <button
+          type="submit"
+          class="bg-paper px-8 py-3.5 font-secondary text-sm font-semibold uppercase tracking-[0.12em] text-paper-foreground transition-all hover:bg-tertiary-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+        >
+          Stamp the request
+        </button>
+        <p id="booking-confirmation" class="hidden font-mono text-xs tracking-[0.06em] text-tertiary-300" role="status">
+          Request stamped — the studio will reply within 24–48 h.
+        </p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  // Placeholder submit handler — replace with a real POST to the booking
+  // endpoint once apps/api exists.
+  const form = document.getElementById('booking-form');
+  const confirmation = document.getElementById('booking-confirmation');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    confirmation?.classList.remove('hidden');
+    if (!reduceMotion) {
+      confirmation?.animate(
+        [
+          { opacity: 0, transform: 'translateY(0.5rem)' },
+          { opacity: 1, transform: 'translateY(0)' },
+        ],
+        { duration: 300, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' },
+      );
+    }
+  });
+</script>

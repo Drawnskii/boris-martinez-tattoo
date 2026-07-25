@@ -1,5 +1,5 @@
 {
-  "name": "pole-tattoo-website",
+  "name": "boris-martinez-tattoo",
   "private": true,
   "type": "module",
   "engines": {
@@ -7,10 +7,10 @@
   },
   "packageManager": "pnpm@11.13.1",
   "scripts": {
-    "dev": "pnpm --filter @pole-tattoo/web dev",
-    "build": "pnpm --filter @pole-tattoo/web build",
-    "preview": "pnpm --filter @pole-tattoo/web preview",
-    "lint": "pnpm -r lint",
-    "check": "pnpm -r check"
+    "dev": "pnpm --filter @boris-martinez-tattoo/web dev",
+    "build": "pnpm --filter @boris-martinez-tattoo/web build",
+    "preview": "pnpm --filter @boris-martinez-tattoo/web preview",
+    "lint": "pnpm -r --if-present lint",
+    "check": "pnpm -r --if-present check"
   }
 }

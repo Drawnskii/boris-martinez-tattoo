@@ -1,0 +1,24 @@
+---
+/* -----------------------------------------------------------------
+   SectionHeading — the engraved inscription opening each register
+   section: mono entry tag, Cinzel inscription, one-line annotation.
+   ----------------------------------------------------------------- */
+interface Props {
+  tag?: string;
+  title: string;
+  subtitle?: string;
+  align?: 'left' | 'center';
+}
+
+const { tag, title, subtitle, align = 'center' } = Astro.props;
+---
+
+<div class={align === 'center' ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl text-left'}>
+  {tag && (
+    <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">
+      {tag}
+    </p>
+  )}
+  <h2 class="mt-3 font-secondary text-3xl tracking-[0.02em] text-foreground md:text-4xl">{title}</h2>
+  {subtitle && <p class="mt-4 text-base text-muted-foreground">{subtitle}</p>}
+</div>

@@ -1,209 +1,169 @@
 /* =================================================================
-   Pole Tattoo — Design System (Tailwind v4 theme)
+    Boris Martinez Tattoo — Design System (Tailwind v4 theme)
    -----------------------------------------------------------------
-   Everything in this file lives inside the `@theme` block, which
-   Tailwind v4 turns into CSS variables (under `:root`) AND into
-   utility classes (`bg-primary-500`, `text-xl`, `rounded-lg`,
-   `font-secondary`, ...).
+    THE ASSAY CATALOG
+    Every piece leaves the studio hallmarked like silver: entered in
+    a register with its assay stamp (date, placement, session). The
+    site is that register — matte graphite velvet ground, engraved
+    silver-white type, beige certificate paper for documents.
 
-   Tokens are grouped:
+      • primary   — graphite velvet (dark gray, warm cast)  hue ≈ 90
+      • secondary — struck silver (near-white metal)        hue ≈ 260
+      • tertiary  — certificate beige (paper & wax)         hue ≈ 85
 
-     1. Color scales       — primary / secondary / tertiary
-     2. Semantic surfaces  — surface / background / text pairs
-     3. Typography         — primary + secondary font families,
-                             font-size scale (with line-heights)
-     4. Radius scale       — border-radius steps
-     5. Breakpoints        — kept at Tailwind defaults
-
-   Every value is OKLCH-friendly (colors use the `oklch()` function)
-   so rebranding is a single edit per hue. To re-skin the site,
-   change the three `--color-*-XXX` scales below; everything else
-   (utilities, semantic tokens) flows from them.
+    Dark-dominant: the graphite ground owns the page; silver is
+    type and engraving; beige appears only where a document,
+    seal, or stamp exists. All colors OKLCH; rebrand = edit here.
    ================================================================= */
 
 @import "tailwindcss";
 
-/* -----------------------------------------------------------------
-   1. COLOR SCALES
-   -----------------------------------------------------------------
-   Each scale runs 50 → 950 (11 steps, Tailwind convention).
-   Colors are authored in OKLCH (Lightness Chroma Hue):
-
-       oklch(<lightness 0–1> <chroma> <hue 0–360>)
-
-   To rebrand: keep the lightness/chroma ramp, change only the
-   <hue> numbers. Run `pnpm dev` while tweaking and watch the live
-   preview update.
-
-   Current defaults (replace with the studio's brand values):
-
-     • primary   — deep crimson "ink"        (hue ≈ 25)
-     • secondary — cool slate / steel blue    (hue ≈ 230)
-     • tertiary  — amber / gold highlight     (hue ≈ 85)
-   ----------------------------------------------------------------- */
-
 @theme {
-  /* ---------- Primary (crimson ink) ---------- */
-  --color-primary-50: oklch(0.97 0.012 25);
-  --color-primary-100: oklch(0.936 0.032 25);
-  --color-primary-200: oklch(0.885 0.059 25);
-  --color-primary-300: oklch(0.808 0.114 22);
-  --color-primary-400: oklch(0.704 0.191 22);
-  --color-primary-500: oklch(0.637 0.207 25);
-  --color-primary-600: oklch(0.586 0.196 27);
-  --color-primary-700: oklch(0.496 0.168 27);
-  --color-primary-800: oklch(0.41 0.135 26);
-  --color-primary-900: oklch(0.35 0.107 26);
-  --color-primary-950: oklch(0.245 0.075 26);
+  /* ---------- Primary (graphite velvet) ---------- */
+  --color-primary-50: oklch(0.96 0.005 90);
+  --color-primary-100: oklch(0.92 0.006 90);
+  --color-primary-200: oklch(0.83 0.008 90);
+  --color-primary-300: oklch(0.72 0.009 90);
+  --color-primary-400: oklch(0.58 0.01 90);
+  --color-primary-500: oklch(0.47 0.01 90);
+  --color-primary-600: oklch(0.38 0.01 90);
+  --color-primary-700: oklch(0.31 0.009 90);
+  --color-primary-800: oklch(0.25 0.008 90);
+  --color-primary-900: oklch(0.2 0.007 90);
+  --color-primary-950: oklch(0.15 0.006 90);
 
-  /* ---------- Secondary (cool slate / steel blue) ---------- */
-  --color-secondary-50: oklch(0.985 0.005 230);
-  --color-secondary-100: oklch(0.96 0.011 230);
-  --color-secondary-200: oklch(0.921 0.022 230);
-  --color-secondary-300: oklch(0.866 0.04 230);
-  --color-secondary-400: oklch(0.775 0.075 230);
-  --color-secondary-500: oklch(0.673 0.115 230);
-  --color-secondary-600: oklch(0.566 0.118 230);
-  --color-secondary-700: oklch(0.477 0.105 230);
-  --color-secondary-800: oklch(0.41 0.085 230);
-  --color-secondary-900: oklch(0.356 0.068 230);
-  --color-secondary-950: oklch(0.265 0.045 230);
+  /* ---------- Secondary (struck silver) ---------- */
+  --color-secondary-50: oklch(0.99 0.002 260);
+  --color-secondary-100: oklch(0.97 0.003 260);
+  --color-secondary-200: oklch(0.93 0.004 260);
+  --color-secondary-300: oklch(0.87 0.006 260);
+  --color-secondary-400: oklch(0.78 0.008 260);
+  --color-secondary-500: oklch(0.68 0.009 260);
+  --color-secondary-600: oklch(0.57 0.009 260);
+  --color-secondary-700: oklch(0.47 0.009 260);
+  --color-secondary-800: oklch(0.37 0.008 260);
+  --color-secondary-900: oklch(0.29 0.007 260);
+  --color-secondary-950: oklch(0.22 0.006 260);
 
-  /* ---------- Tertiary (amber / gold) ---------- */
-  --color-tertiary-50: oklch(0.98 0.015 85);
-  --color-tertiary-100: oklch(0.957 0.045 85);
-  --color-tertiary-200: oklch(0.927 0.083 85);
-  --color-tertiary-300: oklch(0.885 0.128 85);
-  --color-tertiary-400: oklch(0.83 0.165 85);
-  --color-tertiary-500: oklch(0.755 0.183 85);
-  --color-tertiary-600: oklch(0.635 0.191 80);
-  --color-tertiary-700: oklch(0.512 0.165 70);
-  --color-tertiary-800: oklch(0.42 0.128 65);
-  --color-tertiary-900: oklch(0.356 0.099 60);
-  --color-tertiary-950: oklch(0.275 0.067 56);
+  /* ---------- Tertiary (certificate beige) ---------- */
+  --color-tertiary-50: oklch(0.97 0.015 90);
+  --color-tertiary-100: oklch(0.94 0.025 90);
+  --color-tertiary-200: oklch(0.89 0.038 90);
+  --color-tertiary-300: oklch(0.83 0.052 88);
+  --color-tertiary-400: oklch(0.76 0.065 85);
+  --color-tertiary-500: oklch(0.68 0.075 82);
+  --color-tertiary-600: oklch(0.59 0.075 80);
+  --color-tertiary-700: oklch(0.5 0.068 78);
+  --color-tertiary-800: oklch(0.42 0.058 75);
+  --color-tertiary-900: oklch(0.35 0.048 72);
+  --color-tertiary-950: oklch(0.27 0.038 70);
 
-  /* ---------- Neutral surface (warm graphite) ----------
-     Kept as a near-neutral ramp so the brand colors can breathe. */
-  --color-surface-50: oklch(0.985 0.002 240);
-  --color-surface-100: oklch(0.967 0.003 240);
-  --color-surface-200: oklch(0.928 0.006 240);
-  --color-surface-300: oklch(0.871 0.01 240);
-  --color-surface-400: oklch(0.706 0.016 240);
-  --color-surface-500: oklch(0.556 0.02 240);
-  --color-surface-600: oklch(0.446 0.019 240);
-  --color-surface-700: oklch(0.371 0.017 240);
-  --color-surface-800: oklch(0.269 0.013 240);
-  --color-surface-900: oklch(0.21 0.01 240);
-  --color-surface-950: oklch(0.145 0.008 240);
-
-  /* ---------- Semantic tokens (map to surface ramp) ----------
-     Components should prefer these over raw scale steps so the
-     dark/light theme can flip by swapping a few variables later. */
-  --color-background: var(--color-surface-50);
-  --color-foreground: var(--color-surface-900);
-  --color-muted: var(--color-surface-200);
-  --color-muted-foreground: var(--color-surface-600);
-  --color-border: var(--color-surface-200);
-  --color-ring: var(--color-primary-500);
+  /* ---------- Semantic tokens ----------
+     Dark-dominant register: graphite ground, silver ink, beige
+     reserved for documents/seals. Prefer these in components. */
+  --color-background: var(--color-primary-950);
+  --color-foreground: var(--color-secondary-100);
+  --color-muted: var(--color-primary-800);
+  --color-muted-foreground: var(--color-secondary-400);
+  --color-border: var(--color-primary-700);
+  --color-ring: var(--color-tertiary-400);
+  --color-raised: var(--color-primary-900);
+  --color-paper: var(--color-tertiary-100);
+  --color-paper-foreground: var(--color-primary-900);
+  --color-accent: var(--color-tertiary-400);
 
   /* -----------------------------------------------------------------
-       2. TYPOGRAPHY
-       -----------------------------------------------------------------
-       Two font families are exposed as `font-primary` and
-       `font-secondary` utilities:
+     TYPOGRAPHY
+       • primary   — Archivo: the register's running hand (UI/body)
+       • secondary — Cinzel: engraved inscription caps (display)
+       • mono      — JetBrains Mono: assay serials, dates, stamps
+     ----------------------------------------------------------------- */
+  --font-primary: "Archivo", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-secondary: "Cinzel", "Trajan Pro", ui-serif, Georgia,
+    "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono",
+    "SFMono-Regular", Menlo, Consolas, monospace;
 
-         • primary  — UI / body text
-         • secondary — display / headings
-
-       Replace the stack with the studio's chosen fonts and load
-       them in `BaseLayout.astro` (self-host via @fontsource, or use
-       `<link>` to Google Fonts / Fontshare). The fallback chain
-       keeps things readable before the web fonts load. */
-
-  --font-primary: "InterVariable", "Inter", ui-sans-serif, system-ui,
-    -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-secondary: "Fraunces", "Playfair Display", ui-serif, Georgia,
-    Cambria, "Times New Roman", serif;
-
-  /* ---------- Font-size scale ----------
-     Each step pairs a size with a matching default line-height.
-     Tailwind v4 reads `--text-<name>--line-height` for the matching
-     `--text-<name>` token. Override any step freely. */
-
-  --text-2xs: 0.625rem;       /* 10px */
+  /* ---------- Font-size scale (with line-heights) ---------- */
+  --text-2xs: 0.625rem;
   --text-2xs--line-height: 0.875rem;
-
-  --text-xs: 0.75rem;         /* 12px */
+  --text-xs: 0.75rem;
   --text-xs--line-height: 1rem;
-
-  --text-sm: 0.875rem;        /* 14px */
+  --text-sm: 0.875rem;
   --text-sm--line-height: 1.25rem;
-
-  --text-base: 1rem;          /* 16px */
+  --text-base: 1rem;
   --text-base--line-height: 1.5rem;
-
-  --text-lg: 1.125rem;        /* 18px */
+  --text-lg: 1.125rem;
   --text-lg--line-height: 1.75rem;
-
-  --text-xl: 1.25rem;         /* 20px */
+  --text-xl: 1.25rem;
   --text-xl--line-height: 1.75rem;
-
-  --text-2xl: 1.5rem;         /* 24px */
+  --text-2xl: 1.5rem;
   --text-2xl--line-height: 2rem;
-
-  --text-3xl: 1.875rem;       /* 30px */
+  --text-3xl: 1.875rem;
   --text-3xl--line-height: 2.25rem;
-
-  --text-4xl: 2.25rem;        /* 36px */
+  --text-4xl: 2.25rem;
   --text-4xl--line-height: 2.5rem;
-
-  --text-5xl: 3rem;           /* 48px */
+  --text-5xl: 3rem;
   --text-5xl--line-height: 1;
-
-  --text-6xl: 3.75rem;        /* 60px */
+  --text-6xl: 3.75rem;
   --text-6xl--line-height: 1;
-
-  --text-7xl: 4.5rem;         /* 72px */
+  --text-7xl: 4.5rem;
   --text-7xl--line-height: 1;
-
-  --text-8xl: 6rem;           /* 96px */
+  --text-8xl: 6rem;
   --text-8xl--line-height: 1;
-
-  --text-9xl: 8rem;           /* 128px */
+  --text-9xl: 8rem;
   --text-9xl--line-height: 1;
 
   /* -----------------------------------------------------------------
-       3. BORDER RADIUS
-       ----------------------------------------------------------------- */
+     BORDER RADIUS — the register is crisp: sharp to small radii.
+     ----------------------------------------------------------------- */
   --radius-none: 0px;
-  --radius-xs: 0.0625rem;   /* 1px  */
-  --radius-sm: 0.125rem;    /* 2px  */
-  --radius-md: 0.25rem;     /* 4px  */
-  --radius-lg: 0.5rem;      /* 8px  */
-  --radius-xl: 0.75rem;     /* 12px */
-  --radius-2xl: 1rem;       /* 16px */
-  --radius-3xl: 1.5rem;     /* 24px */
-  --radius-4xl: 2rem;       /* 32px */
+  --radius-xs: 0.0625rem;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
   --radius-full: 9999px;
 
-  /* -----------------------------------------------------------------
-       4. SPACING & BREAKPOINTS
-       -----------------------------------------------------------------
-       Kept on Tailwind v4 defaults. Step sizes use the modern
-       `--spacing` multiplier (0.25rem per unit) and breakpoints
-       are the standard `sm → 2xl` ramp. Adjusting the spacing
-       multiplier rescales every `p-*`, `m-*`, `gap-*`, etc. */
+  /* ---------- SPACING & BREAKPOINTS (Tailwind defaults) ---------- */
   --spacing: 0.25rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
 
-  --breakpoint-sm: 40rem;   /* 640px  */
-  --breakpoint-md: 48rem;   /* 768px  */
-  --breakpoint-lg: 64rem;   /* 1024px */
-  --breakpoint-xl: 80rem;   /* 1280px */
-  --breakpoint-2xl: 96rem;  /* 1536px */
+  /* -----------------------------------------------------------------
+     SHELL — the single site container width.
+     Every site-level container (header, section inner, footer) reads
+     this token via the `.shell` utility. Rebrand = edit one line.
+     ----------------------------------------------------------------- */
+  --shell-max: 72rem;
+  --shell-pad: 1.5rem;
 }
 
 /* -----------------------------------------------------------------
-   BASE LAYER — sensible global defaults consuming the tokens above
+   SHELL UTILITY — one width to rule every container.
+   `.shell` = centered, capped at --shell-max, padded --shell-pad.
+   Override the token in @theme above to retune the whole site.
+   ----------------------------------------------------------------- */
+/* `.shell` = centered, capped at --shell-max, padded --shell-pad.
+   Apply to the outer wrapper of every header / section / footer /
+   full-bleed block; child content aligns to the same edges with zero
+   per-element calculation. */
+@utility shell {
+  width: 100%;
+  max-width: var(--shell-max);
+  margin-inline: auto;
+  padding-inline: var(--shell-pad);
+}
+
+/* -----------------------------------------------------------------
+   BASE LAYER
    ----------------------------------------------------------------- */
 @layer base {
   html {
@@ -225,6 +185,12 @@
     font-family: var(--font-secondary);
     font-weight: 600;
     line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background-color: var(--color-tertiary-400);
+    color: var(--color-primary-950);
   }
 
   :focus-visible {
@@ -232,3 +198,67 @@
     outline-offset: 2px;
   }
 }
+
+/* -----------------------------------------------------------------
+   REVEAL — the register opens, entry by entry.
+
+   One shared material idea: opacity + 0.5rem rise, exponential
+   ease-out, one-shot. Progressively enhanced: content is visible by
+   default. The hiding rule applies only under two conditions — the
+   `js` class is present on <html> (set by an inline head script so it
+   never hides content if JS is unavailable) AND the visitor has not
+   asked for reduced motion. The IntersectionObserver in BaseLayout
+   adds `.is-visible` as each entry walks into view.
+   ----------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js .reveal:not(.is-visible) {
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition:
+      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 500ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: auto;
+  }
+}
+
+/* -----------------------------------------------------------------
+   MOBILE MENU — the leaf unfolds. Height + opacity transition gated
+   by `data-open` on the menu panel. Opening uses a slower ease-out
+   arrival (320ms); closing falls back to a faster 220ms exit. The
+   hamburger morphs to an X via transform on the three bars.
+   ----------------------------------------------------------------- */
+#nav-menu {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height 220ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+#nav-menu[data-open="true"] {
+  max-height: 32rem;
+  opacity: 1;
+  transition:
+    max-height 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 320ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* nav-toggle: crossfade between hamburger (open) and X (closed) SVGs.
+   No morph, no transform-origin issues — each SVG is a static path. */
+#nav-toggle .nav-icon {
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1), transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+#nav-toggle .nav-icon-open { opacity: 1; }
+#nav-toggle .nav-icon-closed { opacity: 0; transform: rotate(-90deg); }
+#nav-toggle[aria-expanded="true"] .nav-icon-open { opacity: 0; transform: rotate(90deg); }
+#nav-toggle[aria-expanded="true"] .nav-icon-closed { opacity: 1; transform: rotate(0deg); }

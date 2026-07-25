@@ -1,0 +1,36 @@
+---
+/* -----------------------------------------------------------------
+   CtaButton — the two button styles of the register, everywhere the
+   site offers an action:
+
+     paper   → beige seal: the stamped, primary action
+     outline → hairline rule: the engraved, secondary action
+
+   Sizing and text size stay in the caller's `class` prop (padding,
+   font-size), so the same style serves the slim nav CTA and the
+   large section CTA.
+   ----------------------------------------------------------------- */
+interface Props {
+  href: string;
+  variant?: 'paper' | 'outline';
+  class?: string;
+  /** Descriptive link text for SEO / screen readers. */
+  title?: string;
+}
+
+const { href, variant = 'paper', class: className = '', title } = Astro.props;
+
+const base =
+  'inline-flex items-center justify-center gap-2 font-secondary uppercase tracking-[0.12em] transition-all';
+
+const variants: Record<'paper' | 'outline', string> = {
+  paper:
+    'bg-paper font-semibold text-paper-foreground hover:bg-tertiary-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]',
+  outline:
+    'border border-border text-foreground hover:border-tertiary-400 hover:text-tertiary-300',
+};
+---
+
+<a href={href} title={title} class:list={[base, variants[variant], className]}>
+  <slot />
+</a>

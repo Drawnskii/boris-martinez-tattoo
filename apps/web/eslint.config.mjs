@@ -10,10 +10,18 @@ export default defineConfig(
     ignores: ['dist/', '.astro/', 'node_modules/'],
   },
   js.configs.recommended,
-  tseslint.configs.recommended,
-  astro.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...astro.configs.recommended,
   {
-    // Node-context files (astro.config.mjs, eslint.config.mjs, scripts, ...)
+    files: ['**/*.astro'],
+    languageOptions: {
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: ['.astro'],
+      },
+    },
+  },
+  {
     files: ['**/*.{js,mjs,cjs}'],
     languageOptions: {
       globals: globals.node,

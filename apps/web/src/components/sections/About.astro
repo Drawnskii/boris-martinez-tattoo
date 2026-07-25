@@ -1,0 +1,54 @@
+---
+import SectionHeading from '@components/SectionHeading.astro';
+import ImagePlaceholder from '@components/ImagePlaceholder.astro';
+import AssayMark from '@components/AssayMark.astro';
+import CtaButton from '@components/CtaButton.astro';
+import { BASE_URL } from '@config/site';
+---
+
+<section id="about" class="flex min-h-svh flex-col justify-center border-y border-border bg-raised/50 py-16 md:py-24">
+  <div class="shell">
+    <div class="reveal">
+      <SectionHeading
+        tag="Entry II — The House"
+        title="About the artist"
+        subtitle="One artist, one needle, one register. The full account lives on the artist's entry."
+      />
+    </div>
+
+    <div class="reveal mt-14 grid items-start gap-12 md:grid-cols-2">
+      {/* artist portrait plate with its sealed hallmark */}
+      <div class="relative">
+        <ImagePlaceholder label="Portrait of the artist" class="aspect-4/5 w-full" />
+        <AssayMark serial="BM" sealed class="absolute -bottom-6 -right-4 bg-background md:-right-6" />
+      </div>
+
+      <div class="md:pt-6">
+        <h3 class="font-secondary text-2xl tracking-[0.02em] text-foreground">Boris Martinez</h3>
+        <p class="mt-2 font-mono text-2xs uppercase tracking-[0.14em] text-tertiary-400">
+          Tattoo artist · Blackwork
+        </p>
+
+        <p class="mt-6 max-w-[65ch] text-base leading-relaxed text-muted-foreground">
+          I'm Boris Martinez. My story as a Tattoo Artist begins with a move
+          to Los Angeles — no plan, only the pursuit of a dream. There I came
+          upon <a href="https://kktstudiola.com/" title="Kustom Kulture Tattoo Studio" class="text-foreground underline underline-offset-4 hover:text-tertiary-400">Kustom Kulture Tattoo Studio</a>,
+          a shop of experienced and open-handed artists.
+        </p>
+        <p class="mt-4 max-w-[65ch] text-base leading-relaxed text-muted-foreground">
+          I reached LA as an artist in search of an opening. What I found was
+          family, mentors, and a way forward — a debt I carry with gratitude,
+          by sharing my art and my passion, now my profession, with the whole
+          world.
+        </p>
+
+        <CtaButton href={`${BASE_URL}/about`} variant="outline" title="Read the full artist biography — Boris Martinez" class="mt-8 px-6 py-3 text-xs">
+          Read the artist's entry
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 12h14m-6-6 6 6-6 6"></path>
+          </svg>
+        </CtaButton>
+      </div>
+    </div>
+  </div>
+</section>

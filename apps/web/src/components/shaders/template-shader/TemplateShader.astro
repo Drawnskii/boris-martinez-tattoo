@@ -1,0 +1,210 @@
+<div id="canvas-container"></div>
+
+<script>
+  /* Types only — erased at compile time. Runtime three.js is loaded
+     dynamically (see init) so the 600KB bundle never blocks FCP. */
+  import type * as ThreeNS from 'three';
+
+  /* Runtime three namespace, set after the dynamic import resolves. */
+  let T: typeof ThreeNS;
+
+  class MercuryScene {
+    private renderer!: ThreeNS.WebGLRenderer;
+    private scene!: ThreeNS.Scene;
+    private camera!: ThreeNS.OrthographicCamera;
+    private material!: ThreeNS.ShaderMaterial;
+    private geometry!: ThreeNS.PlaneGeometry;
+    private timer!: ThreeNS.Timer;
+    private container: HTMLElement;
+    private onResizeBound: () => void;
+    private onPointerMoveBound: (e: PointerEvent) => void;
+    private onVisibilityBound: () => void;
+
+    /* Mouse spring state — the main drop eases toward the pointer. */
+    private mouseTarget: ThreeNS.Vector2;
+    private mouseCurrent: ThreeNS.Vector2;
+
+    /* Pause when the hero leaves the viewport or the tab is hidden. */
+    private visible = true;
+    private observer: IntersectionObserver | null = null;
+    private reducedMotion = false;
+    private running = true;
+
+    constructor(container: HTMLElement, vertexShader: string, fragmentShader: string) {
+      this.container = container;
+      this.timer = new T.Timer();
+      this.mouseTarget = new T.Vector2(0, 0);
+      this.mouseCurrent = new T.Vector2(0, 0);
+      this.onResizeBound = this.onWindowResize.bind(this);
+      this.onPointerMoveBound = this.onPointerMove.bind(this);
+      this.onVisibilityBound = this.onVisibilityChange.bind(this);
+      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this.init(vertexShader, fragmentShader);
+
+      if (this.reducedMotion) {
+        // Render one elegant still frame — no loop, no motion.
+        this.material.uniforms.uTime.value = 12.0;
+        this.renderer.render(this.scene, this.camera);
+      } else {
+        this.renderer.setAnimationLoop(this.animate);
+      }
+
+      window.addEventListener('resize', this.onResizeBound);
+      window.addEventListener('pointermove', this.onPointerMoveBound, { passive: true });
+      document.addEventListener('visibilitychange', this.onVisibilityBound);
+
+      this.observer = new IntersectionObserver(
+        (entries) => { this.visible = entries[0]?.isIntersecting ?? true; },
+        { threshold: 0 }
+      );
+      this.observer.observe(this.container);
+    }
+
+    private init(vertexShader: string, fragmentShader: string) {
+      this.renderer = new T.WebGLRenderer({
+        alpha: true,
+        antialias: false,
+        powerPreference: 'high-performance',
+      });
+
+      this.renderer.setClearColor(0x000000, 0);
+      this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
+      // Mobile: cap at 1.0 — a 3x phone screen raymarching 64 steps at
+      // full DPR is the main LCP killer. Desktop keeps up to 1.25.
+      const maxDpr = window.innerWidth < 768 ? 1.0 : 1.25;
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxDpr));
+      this.container.appendChild(this.renderer.domElement);
+
+      this.scene = new T.Scene();
+      this.camera = new T.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+      this.material = new T.ShaderMaterial({
+        vertexShader,
+        fragmentShader,
+        transparent: true,
+        uniforms: {
+          uResolution: {
+            value: new T.Vector2(this.container.clientWidth, this.container.clientHeight),
+          },
+          uTime: { value: 0 },
+          uMouse: { value: new T.Vector2(0, 0) },
+        },
+      });
+
+      this.geometry = new T.PlaneGeometry(2, 2);
+      const plane = new T.Mesh(this.geometry, this.material);
+      this.scene.add(plane);
+    }
+
+    private onPointerMove(e: PointerEvent) {
+      const rect = this.container.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+      // Normalized -1..1 over the viewport, mapped to world offset.
+      const nx = (e.clientX / window.innerWidth) * 2 - 1;
+      const ny = (e.clientY / window.innerHeight) * 2 - 1;
+      this.mouseTarget.set(nx * 0.45, -ny * 0.22);
+    }
+
+    private onVisibilityChange() {
+      this.running = document.visibilityState === 'visible';
+    }
+
+    private onWindowResize() {
+      if (!this.container) return;
+      const w = this.container.clientWidth;
+      const h = this.container.clientHeight;
+      this.renderer.setSize(w, h);
+      this.material.uniforms.uResolution.value.set(w, h);
+    }
+
+    private animate = (timestamp: number) => {
+      this.timer.update(timestamp);
+      if (this.visible && this.running) {
+        // Spring the drop toward the pointer — slow, weighty, like liquid.
+        this.mouseCurrent.lerp(this.mouseTarget, 0.045);
+        this.material.uniforms.uMouse.value.copy(this.mouseCurrent);
+
+        this.material.uniforms.uTime.value = this.timer.getElapsed();
+        this.renderer.render(this.scene, this.camera);
+      }
+    };
+
+    public destroy() {
+      this.renderer.setAnimationLoop(null);
+      window.removeEventListener('resize', this.onResizeBound);
+      window.removeEventListener('pointermove', this.onPointerMoveBound);
+      document.removeEventListener('visibilitychange', this.onVisibilityBound);
+      this.observer?.disconnect();
+
+      this.geometry.dispose();
+      this.material.dispose();
+      this.renderer.dispose();
+      this.renderer.forceContextLoss();
+
+      if (this.renderer.domElement.parentNode) {
+        this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+      }
+    }
+  }
+
+  let sceneInstance: MercuryScene | null = null;
+
+  /* Defer everything: three.js + GLSL load in an idle chunk AFTER the
+     hero text has painted. FCP/LCP measure the DOM text — the drop
+     fades in a few hundred ms later, off the critical path. */
+  const init = async () => {
+    const container = document.getElementById('canvas-container');
+    if (!container) return;
+    if (sceneInstance) {
+      sceneInstance.destroy();
+      sceneInstance = null;
+    }
+
+    const [three, vertex, fragment] = await Promise.all([
+      import('three'),
+      import('./vertex.glsl?raw'),
+      import('./fragment.glsl?raw'),
+    ]);
+    T = three;
+    sceneInstance = new MercuryScene(container, vertex.default, fragment.default);
+
+    // Reveal the mercury drop — it fades in now that the first frame
+    // is rendered, arriving in step with the hero text entrance.
+    container.style.opacity = '1';
+  };
+
+  const schedule = () => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(() => void init(), { timeout: 2000 });
+    } else {
+      setTimeout(() => void init(), 200);
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', schedule);
+  } else {
+    schedule();
+  }
+
+  document.addEventListener('astro:before-swap', () => {
+    if (sceneInstance) {
+      sceneInstance.destroy();
+      sceneInstance = null;
+    }
+  });
+</script>
+
+<style>
+  #canvas-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* mercury arrival: the drop materializes in step with the hero
+       entrance, not a pop. Default opacity 0 transitions to 1 once
+       three.js resolves (set in init). Reduced-motion: no transition,
+       still fades in — the still frame renders and arrives gently. */
+    opacity: 0;
+    transition: opacity 1000ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+</style>

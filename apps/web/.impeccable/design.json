@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-25T12:45:00Z",
+  "title": "Design System: Boris Martinez Tattoo — The Assay Catalog",
+  "extensions": {
+    "colorMeta": {
+      "graphite-velvet-950": { "role": "primary", "displayName": "Graphite Velvet 950", "canonical": "oklch(0.15 0.006 90)", "tonalRamp": ["oklch(0.96 0.005 90)", "oklch(0.83 0.008 90)", "oklch(0.72 0.009 90)", "oklch(0.58 0.01 90)", "oklch(0.47 0.01 90)", "oklch(0.38 0.01 90)", "oklch(0.31 0.009 90)", "oklch(0.25 0.008 90)", "oklch(0.2 0.007 90)", "oklch(0.15 0.006 90)"] },
+      "struck-silver-100": { "role": "secondary", "displayName": "Struck Silver 100", "canonical": "oklch(0.97 0.003 260)", "tonalRamp": ["oklch(0.99 0.002 260)", "oklch(0.93 0.004 260)", "oklch(0.87 0.006 260)", "oklch(0.78 0.008 260)", "oklch(0.68 0.009 260)", "oklch(0.57 0.009 260)", "oklch(0.47 0.009 260)", "oklch(0.37 0.008 260)", "oklch(0.29 0.007 260)", "oklch(0.22 0.006 260)"] },
+      "certificate-beige-100": { "role": "tertiary", "displayName": "Certificate Beige 100", "canonical": "oklch(0.94 0.025 90)", "tonalRamp": ["oklch(0.97 0.015 90)", "oklch(0.89 0.038 90)", "oklch(0.83 0.052 88)", "oklch(0.76 0.065 85)", "oklch(0.68 0.075 82)", "oklch(0.59 0.075 80)", "oklch(0.5 0.068 78)", "oklch(0.42 0.058 75)", "oklch(0.35 0.048 72)", "oklch(0.27 0.038 70)"] },
+      "raised": { "role": "neutral", "displayName": "Graphite Velvet 900 (Raised)", "canonical": "oklch(0.2 0.007 90)", "tonalRamp": ["oklch(0.96 0.005 90)", "oklch(0.83 0.008 90)", "oklch(0.72 0.009 90)", "oklch(0.58 0.01 90)", "oklch(0.47 0.01 90)", "oklch(0.38 0.01 90)", "oklch(0.31 0.009 90)", "oklch(0.25 0.008 90)", "oklch(0.2 0.007 90)", "oklch(0.15 0.006 90)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Cinzel — engraved display", "purpose": "Hero h1, page h1, section h2, sub-section h3. Uppercase inscriptions, the way silver is struck." },
+      "body": { "displayName": "Archivo — register hand", "purpose": "All paragraph copy. Neutral register hand that disappears into reading." },
+      "label": { "displayName": "JetBrains Mono — assay data", "purpose": "Serials, dates, sizes, field labels, entry tags. Functional registration data only, never decoration." }
+    },
+    "shadows": [
+      { "name": "state-hover-glow", "value": "0 2px 8px rgba(0,0,0,0.4)", "purpose": "State-only hover glow on the primary paper button and booking submit. Never on a resting surface (Flat-By-Default)." }
+    ],
+    "motion": [
+      { "name": "mercury-spring-lerp", "value": "Vector2.lerp(target, 0.045)", "purpose": "Spring the liquid-mercury drop toward the pointer — slow, weighty, like liquid. Hero only." },
+      { "name": "link-color-transition", "value": "transition-colors 150ms", "purpose": "Hover color shift on nav links and outline buttons." },
+      { "name": "button-state-transition", "value": "transition-all 150ms", "purpose": "Background + shadow state change on primary buttons." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "40rem" },
+      { "name": "md", "value": "48rem" },
+      { "name": "lg", "value": "64rem" },
+      { "name": "xl", "value": "80rem" },
+      { "name": "2xl", "value": "96rem" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button (paper)",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The stamped, primary action — beige seal, graphite ink, Cinzel caps. Used for hero CTA, booking submit, top pricing tier, full-register link.",
+      "html": "<a class=\"ds-btn-paper\" href=\"#booking\">Book Your Session</a>",
+      "css": ".ds-btn-paper { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: oklch(0.94 0.025 90); color: oklch(0.2 0.007 90); padding: 0.875rem 2rem; border: 1px solid transparent; border-radius: 0; font-family: \"Cinzel\", \"Trajan Pro\", ui-serif, Georgia, serif; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; transition: background 150ms, box-shadow 150ms; } .ds-btn-paper:hover { background: oklch(0.83 0.052 88); box-shadow: 0 2px 8px rgba(0,0,0,0.4); } .ds-btn-paper:focus-visible { outline: 2px solid oklch(0.76 0.065 85); outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button (engraved)",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "The engraved, secondary action — hairline rule, silver type, beige edge on hover. Hero 'See Work', back-to-home, lower pricing tiers.",
+      "html": "<a class=\"ds-btn-outline\" href=\"/gallery\">See Work</a>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: transparent; color: oklch(0.97 0.003 260); padding: 0.875rem 2rem; border: 1px solid oklch(0.31 0.009 90); border-radius: 0; font-family: \"Cinzel\", \"Trajan Pro\", ui-serif, Georgia, serif; font-size: 0.75rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.12em; transition: border-color 150ms, color 150ms; } .ds-btn-outline:hover { border-color: oklch(0.76 0.065 85); color: oklch(0.83 0.052 88); } .ds-btn-outline:focus-visible { outline: 2px solid oklch(0.76 0.065 85); outline-offset: 2px; }"
+    },
+    {
+      "name": "Input / Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Commission-slip fields: 1px hairline on raised graphite, square corners, Archivo body. Focus edge shifts to beige.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-input-name\">Name</label><input class=\"ds-input\" id=\"ds-input-name\" type=\"text\" placeholder=\"Your name\" />",
+      "css": ".ds-field-label { display: block; margin-bottom: 0.375rem; font-family: \"JetBrains Mono\", ui-monospace, monospace; font-size: 0.625rem; line-height: 0.875rem; text-transform: uppercase; letter-spacing: 0.14em; color: oklch(0.78 0.008 260); } .ds-input { width: 100%; background: oklch(0.2 0.007 90); color: oklch(0.97 0.003 260); border: 1px solid oklch(0.31 0.009 90); border-radius: 0; padding: 0.625rem 0.875rem; font-family: \"Archivo\", ui-sans-serif, system-ui, sans-serif; font-size: 0.875rem; line-height: 1.25rem; transition: border-color 150ms; } .ds-input::placeholder { color: oklch(0.78 0.008 260); } .ds-input:focus { border-color: oklch(0.76 0.065 85); outline: none; }"
+    },
+    {
+      "name": "Navigation Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Cinzel engraved caps over the hairline header rule; muted silver, foreground on hover. No underline, no active state.",
+      "html": "<a class=\"ds-nav-link\" href=\"#portfolio\" title=\"Tattoo portfolio\">Portfolio</a>",
+      "css": ".ds-nav-link { font-family: \"Cinzel\", \"Trajan Pro\", ui-serif, Georgia, serif; font-size: 0.75rem; line-height: 1rem; font-weight: 400; text-transform: uppercase; letter-spacing: 0.14em; color: oklch(0.78 0.008 260); text-decoration: none; transition: color 150ms; } .ds-nav-link:hover { color: oklch(0.97 0.003 260); } .ds-nav-link:focus-visible { outline: 2px solid oklch(0.76 0.065 85); outline-offset: 2px; }"
+    },
+    {
+      "name": "Wax Seal (nav medallion)",
+      "kind": "custom",
+      "refersTo": "assay-mark-sealed",
+      "description": "64px rounded-full wax-seal medallion with a two-letter monogram in Cinzel. One of only two rounded-full surfaces in the system (the other is the sealed AssayMark).",
+      "html": "<span class=\"ds-wax-seal\" aria-hidden=\"true\">BM</span>",
+      "css": ".ds-wax-seal { display: inline-flex; align-items: center; justify-content: center; width: 2.25rem; height: 2.25rem; flex-shrink: 0; border: 1px solid oklch(0.76 0.065 85 / 0.7); border-radius: 9999px; font-family: \"Cinzel\", \"Trajan Pro\", ui-serif, Georgia, serif; font-size: 0.875rem; letter-spacing: 0.05em; color: oklch(0.83 0.052 88); transition: color 150ms; } .ds-wax-seal:hover { color: oklch(0.89 0.038 90); }"
+    },
+    {
+      "name": "Assay Mark",
+      "kind": "custom",
+      "refersTo": "assay-mark",
+      "description": "The certification stamp carried by every registered piece — serial · placement · session, in mono caps. Unsealed: muted silver. Sealed: same wax-circle treatment as the nav medallion at 64px.",
+      "html": "<span class=\"ds-assay-mark\">No. 042 · Forearm · 2026</span>",
+      "css": ".ds-assay-mark { font-family: \"JetBrains Mono\", ui-monospace, monospace; font-size: 0.625rem; line-height: 0.875rem; text-transform: uppercase; letter-spacing: 0.14em; color: oklch(0.78 0.008 260); }"
+    },
+    {
+      "name": "Register Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Sharp-cornered surface on the graphite ground, separated from neighbors by a 1px hairline gap (gap-px inside a bg-border grid) rather than its own border or shadow. Used by Health chapters, Portfolio figures, Location panels.",
+      "html": "<article class=\"ds-card\"><h3 class=\"ds-card-title\">Studio hygiene</h3><ul class=\"ds-card-list\"><li>Single-use sterile needles</li></ul></article>",
+      "css": ".ds-card { background: oklch(0.15 0.006 90); padding: 1.5rem; border-radius: 0; } .ds-card-title { margin-top: 0.5rem; font-family: \"Cinzel\", \"Trajan Pro\", ui-serif, Georgia, serif; font-size: 1.125rem; line-height: 1.75rem; font-weight: 600; letter-spacing: 0.02em; color: oklch(0.97 0.003 260); } .ds-card-list { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid oklch(0.31 0.009 90); list-style: none; padding-left: 0; display: flex; flex-direction: column; gap: 0.625rem; font-size: 0.875rem; line-height: 1.25rem; color: oklch(0.78 0.008 260); }"
+    },
+    {
+      "name": "Image Placeholder",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "Stand-in plate awaiting real studio photography: 1px hairline on raised graphite, a diagonal SVG etch, a mountain-frame icon at 50% opacity, and a mono label. Replace one-for-one with <astro:assets> Image when real assets arrive. Never fabricate tattoo photos.",
+      "html": "<div class=\"ds-plate\" role=\"img\" aria-label=\"Piece No. 042\"><svg class=\"ds-plate-etch\" preserveAspectRatio=\"none\" aria-hidden=\"true\"><line x1=\"0\" y1=\"100%\" x2=\"100%\" y2=\"0\" stroke=\"currentColor\" stroke-width=\"1\" vector-effect=\"non-scaling-stroke\" /></svg><span class=\"ds-plate-label\">Piece No. 042</span></div>",
+      "css": ".ds-plate { position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; background: oklch(0.2 0.007 90); border: 1px solid oklch(0.31 0.009 90); } .ds-plate-etch { position: absolute; inset: 0; width: 100%; height: 100%; color: oklch(0.31 0.009 90); } .ds-plate-label { position: relative; padding: 0 0.5rem; font-family: \"JetBrains Mono\", ui-monospace, monospace; font-size: 0.625rem; line-height: 0.875rem; text-transform: uppercase; letter-spacing: 0.14em; color: oklch(0.78 0.008 260); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Assay Catalog",
+    "overview": "Every tattoo leaves this studio hallmarked like a piece of precious metal — entered in a register with its assay stamp (serial, placement, session date). The site is that register: a matte graphite velvet ground, engraved silver-white inscriptions, beige certificate paper reserved exclusively for documents, seals, and stamps. The metaphor refutes the category's default dark photo-grid + gothic type, replacing gothic mood with the precision of a silversmith's ledger.\n\nThe world is dark-dominant and quiet. The graphite ground owns the page; silver metal is every word; beige appears only where a physical artifact (a commission seal, a wax stamp, an assay hallmark, a paper slip) would be pressed onto the page. Sharp corners and hairline rules do the structural work that shadows and gradients would do in a softer system — the register is crisp, not soft. Cinzel carries the engraved display caps the way an inscription cutter would cut them; Archivo is the register's running hand; JetBrains Mono carries only functional registration data — serials, dates, sizes — never decoration.\n\nDepth is tonal, not cast. Surfaces step one ramp-step darker or lighter on the graphite scale to distinguish background from raised, and a single hairline rule separates them. The one signature motion is the liquid-mercury drop in the hero — a WebGL noise-displaced chrome form that honors the studio's liquid-metal work — and it is one-of-a-kind: the rest of the system stays still.",
+    "keyCharacteristics": [
+      "Matte graphite velvet ground, dark-dominant, warm near-neutral cast.",
+      "Struck-silver type as the single ink; beige reserved for documents, seals, and stamps (≤10% of any view).",
+      "Sharp corners (0–2px); rounded-full only for the wax seal and the sealed assay mark.",
+      "Hairline rules and tonal steps replace shadows and gradients.",
+      "Cinzel for engraved display caps, Archivo for body, JetBrains Mono for assay data only.",
+      "One signature motion: the liquid-mercury drop in the hero; everything else is static."
+    ],
+    "rules": [
+      { "name": "The Paper Rule", "body": "Beige appears only where a physical document, seal, stamp, or hallmark would exist on the page — the primary button, the sealed assay mark, focus rings, the wax-seal nav medallion, the ::selection highlight. It must never become a section background, a card fill, or a decorative accent. Cap its area at ~10% of any viewport; its rarity is the point.", "section": "colors" },
+      { "name": "The Two-Ink Rule", "body": "Silver type on graphite ground — never reverse (graphite type on silver) and never set body copy in beige. Beige is for stamps and marks, not paragraphs.", "section": "colors" },
+      { "name": "The Chisel Rule", "body": "Cinzel is for display and headings. Archivo is for body copy. JetBrains Mono is for assay serials, dates, sizes, and field labels only — never a decorative eyebrow, never a paragraph, never a button label. Mixing the three breaks the metaphor.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Shadows appear only as a response to state (hover, focus, elevation). No card shadows, no ambient elevation, no faux depth — tonal steps and hairline rules carry all structural separation.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use the semantic tokens (bg-background, text-muted-foreground, bg-paper, border-tertiary-400) over raw scale steps. They are the single point of change when the world is retuned.",
+      "Do set every site-level wrapper to .shell and override --shell-max on the element for narrower pages (about article, booking slip) rather than reaching for a different container utility.",
+      "Do keep Cinzel for display and headings, Archivo for body, JetBrains Mono for serials, dates, sizes, and field labels only (The Chisel Rule).",
+      "Do ship ImagePlaceholder for every image asset until Boris supplies real photography; swap each call for an <astro:assets> Image one-for-one when it arrives.",
+      "Do gate the hero's mercury shader on prefers-reduced-motion: reduce (render one still frame) and on IntersectionObserver / visibilitychange (pause when off-screen or tab-hidden) — the perf profile is part of the craft.",
+      "Do carry an AssayMark (serial · placement · session) on every registered piece; it is the brand's recurring signature.",
+      "Do use 1px hairline border-border rules as the structural separator between surfaces; the tonal step from background to raised carries the rest."
+    ],
+    "donts": [
+      "Don't apply beige to a section background, card fill, or decorative accent (The Paper Rule). It is for documents, seals, stamps, focus rings, and the primary button only.",
+      "Don't set body copy in beige, reverse the silver-on-graphite relationship, or use Cinzel / Archivo / JetBrains Mono outside their assigned roles (The Two-Ink Rule + The Chisel Rule).",
+      "Don't add resting shadows, ambient elevation, intermediate radii, or faux-depth gradients that don't read as a physical consequence of a surface (Flat-By-Default). The hero veil and the portfolio figcaption gradient are the only sanctioned gradients.",
+      "Don't use rounded-lg, rounded-xl, rounded-2xl, rounded-3xl, or rounded-4xl on any resting surface. The register is sharp; rounded-full is only for the wax seal and the sealed assay mark.",
+      "Don't wire the booking form to a fake success state or fabricate tattoo photos, testimonials, press quotes, or case studies. The form is a placeholder until apps/api exists; real assets arrive from Boris only.",
+      "Don't invent intermediate assays beyond serial · placement · session — the three-part stamp is the canonical assay mark."
+    ]
+  }
+}

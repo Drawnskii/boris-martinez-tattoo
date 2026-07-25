@@ -1,0 +1,38 @@
+---
+/* -----------------------------------------------------------------
+   NavMobileMenu — collapsible mobile menu (links + CTA). Toggled by
+   the `#nav-toggle` button that lives in the top header bar.
+   ----------------------------------------------------------------- */
+import { NAV_LINKS, BASE_URL } from '@config/site';
+import NavCta from '@components/NavCta.astro';
+
+const linkClass =
+  'font-secondary text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:text-foreground';
+---
+
+<nav
+  id="nav-menu"
+  aria-label="Mobile"
+  data-open="false"
+  class="absolute inset-x-0 top-full z-50 border-b border-border bg-background/95 px-6 py-4 backdrop-blur"
+>
+  <ul class="flex flex-col gap-4">
+    {NAV_LINKS.map((link) => (
+      <li><a href={`${BASE_URL}${link.href}`} title={link.title} class={linkClass}>{link.label}</a></li>
+    ))}
+    <li>
+      <NavCta class="mt-2 inline-block px-5" />
+    </li>
+  </ul>
+</nav>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu = document.getElementById('nav-menu');
+  toggle?.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') === 'true';
+    const next = String(!open);
+    toggle.setAttribute('aria-expanded', next);
+    menu?.setAttribute('data-open', next);
+  });
+</script>

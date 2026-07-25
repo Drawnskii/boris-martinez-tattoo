@@ -1,0 +1,78 @@
+---
+import SectionHeading from '@components/SectionHeading.astro';
+
+const chapters = [
+  {
+    numeral: '1',
+    title: 'Before the sitting',
+    items: [
+      'Eat well and stay hydrated',
+      'Avoid alcohol for 24 hours before',
+      'Moisturise the area for a few days prior',
+      'Wear clothing that gives easy access',
+    ],
+  },
+  {
+    numeral: '2',
+    title: 'Health conditions',
+    items: [
+      'Tell us about allergies or skin conditions',
+      'Diabetes, heart conditions, blood disorders',
+      'Pregnancy or breastfeeding',
+      'Blood-thinning medication',
+    ],
+  },
+  {
+    numeral: '3',
+    title: 'Studio hygiene',
+    items: [
+      'Single-use sterile needles',
+      'Hospital-grade disinfection',
+      'Licensed & inspected studio',
+      'Fresh gloves for every client',
+    ],
+  },
+  {
+    numeral: '4',
+    title: 'Care of the metal',
+    items: [
+      'Keep the wrap on for 2–4 hours',
+      'Wash gently, pat dry, moisturise',
+      'No sun, pools or saunas for 2 weeks',
+      'Never pick at scabs',
+    ],
+  },
+];
+---
+
+<section id="health" class="flex min-h-svh flex-col justify-center border-y border-border bg-raised/50 py-16 md:py-24">
+  <div class="shell">
+    <div class="reveal">
+      <SectionHeading
+        tag="Entry IV — The Care"
+        title="Safe ink, healthy skin"
+        subtitle="The care instructions that accompany every piece — what to know before, during, and after your sitting."
+      />
+    </div>
+
+    {/* the care chapters: dark register cards, one per chapter */}
+    <div class="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+      {chapters.map((chapter, i) => (
+        <article class="reveal bg-background p-6" style={`--reveal-delay: ${i * 80}ms`}>
+          <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">
+            {chapter.numeral}
+          </p>
+          <h3 class="mt-2 font-secondary text-lg tracking-[0.02em] text-foreground">{chapter.title}</h3>
+          <ul class="mt-4 space-y-2.5 border-t border-border pt-4">
+            {chapter.items.map((item) => (
+              <li class="flex items-start gap-2 text-sm leading-snug text-muted-foreground">
+                <span class="mt-1.75 size-1 shrink-0 bg-tertiary-400" aria-hidden="true"></span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

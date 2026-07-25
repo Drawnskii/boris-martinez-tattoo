@@ -1,0 +1,112 @@
+---
+/* -----------------------------------------------------------------
+   Navbar — renders as one of three layouts, selected by
+   PUBLIC_NAV_LAYOUT (see src/config/site.ts):
+
+     header  → sticky top header
+     left    → fixed left sidebar on lg+ / top header on mobile
+     right   → fixed right sidebar on lg+ / top header on mobile
+
+   Register grammar: wax-seal medallion + Cinzel wordmark, engraved
+   caps links over a hairline rule, the commission seal as CTA.
+   ----------------------------------------------------------------- */
+import { NAV_LINKS, NAV_LAYOUT, BASE_URL } from '@config/site';
+import NavBrand from '@components/NavBrand.astro';
+import NavCta from '@components/NavCta.astro';
+import NavMobileMenu from '@components/NavMobileMenu.astro';
+
+const isHeader = NAV_LAYOUT === 'header';
+const isSidebar = !isHeader;
+
+const linkClass =
+  'font-secondary text-xs tracking-[0.14em] uppercase text-muted-foreground transition-colors hover:text-foreground';
+
+/* Sidebar placement classes — left or right, symmetric. */
+const sideClass =
+  NAV_LAYOUT === 'right' ? 'right-0 border-l' : 'left-0 border-r';
+---
+
+{/* ================= Header variant ================= */}
+{isHeader && (
+  <header class="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
+    <div class="shell flex h-16 items-center justify-between">
+      <NavBrand />
+
+      <nav aria-label="Primary" class="hidden items-center text-center gap-7 md:flex">
+        {NAV_LINKS.map((link) => (
+          <a href={`${BASE_URL}${link.href}`} title={link.title} class={linkClass}>{link.label}</a>
+        ))}
+        <NavCta compact />
+      </nav>
+
+      {/* mobile menu toggle */}
+      <button
+        id="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="Toggle navigation menu"
+        class="flex size-10 items-center justify-center border border-border md:hidden"
+      >
+        <div class="relative size-5">
+          <svg class="nav-icon nav-icon-open absolute inset-0 size-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M3 6h18M3 12h18M3 18h18"></path>
+          </svg>
+          <svg class="nav-icon nav-icon-closed absolute inset-0 size-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M6 6l12 12M18 6l-12 12"></path>
+          </svg>
+        </div>
+      </button>
+    </div>
+
+    <NavMobileMenu />
+  </header>
+)}
+
+{/* ================= Sidebar variants (left | right) + mobile header fallback ================= */}
+{isSidebar && (
+  <>
+    <aside class={`fixed inset-y-0 z-50 hidden w-64 flex-col border-border bg-background p-6 lg:flex ${sideClass}`}>
+      <NavBrand sealSize="md" compact />
+
+      <nav aria-label="Primary" class="mt-12 flex-1">
+        <ul class="flex flex-col gap-5">
+          {NAV_LINKS.map((link) => (
+            <li><a href={`${BASE_URL}${link.href}`} title={link.title} class={linkClass}>{link.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <NavCta />
+
+      <p class="mt-6 font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
+        Est. register open<br />By appointment only
+      </p>
+    </aside>
+
+    {/* mobile fallback header */}
+    <header class="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur lg:hidden">
+      <div class="shell flex h-16 items-center justify-between">
+        <NavBrand />
+        <button
+          id="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="nav-menu"
+          aria-label="Toggle navigation menu"
+          class="flex size-10 items-center justify-center border border-border"
+        >
+          <div class="relative size-5">
+            <svg class="nav-icon nav-icon-open absolute inset-0 size-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M3 6h18M3 12h18M3 18h18"></path>
+            </svg>
+            <svg class="nav-icon nav-icon-closed absolute inset-0 size-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M6 6l12 12M18 6l-12 12"></path>
+            </svg>
+          </div>
+        </button>
+      </div>
+      <NavMobileMenu />
+    </header>
+  </>
+)}

@@ -1,0 +1,23 @@
+---
+/* -----------------------------------------------------------------
+   NavCta — the commission seal in the nav: the paper CTA at its
+   compact size. Centered text unless `compact`.
+   ----------------------------------------------------------------- */
+import CtaButton from '@components/CtaButton.astro';
+import { BASE_URL } from '@config/site';
+
+interface Props {
+  compact?: boolean;
+  class?: string;
+}
+
+const { compact = false, class: className = '' } = Astro.props;
+---
+
+<CtaButton
+  href={`${BASE_URL}/#booking`}
+  title="Request a custom tattoo commission"
+  class={`px-5 py-2.5 text-xs ${compact ? '' : 'text-center'} ${className}`}
+>
+  Request a commission
+</CtaButton>

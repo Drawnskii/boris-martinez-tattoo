@@ -1,0 +1,87 @@
+---
+import SectionHeading from '@components/SectionHeading.astro';
+import ImagePlaceholder from '@components/ImagePlaceholder.astro';
+
+const hours = [
+  { days: 'Monday — Friday', time: '10:00 — 19:00' },
+  { days: 'Saturday', time: '11:00 — 17:00' },
+  { days: 'Sunday', time: 'Closed' },
+];
+---
+
+<section id="location" class="flex min-h-svh flex-col justify-center py-16 md:py-24">
+  <div class="shell">
+    <div class="reveal">
+      <SectionHeading
+        tag="Entry V — The Atelier"
+        title="Find the atelier"
+        subtitle="By appointment only — request a commission first, then call for the consultation."
+      />
+    </div>
+
+    <div class="mt-14 grid gap-10 lg:grid-cols-5">
+      {/* map plate */}
+      <ImagePlaceholder label="Map of the atelier" class="reveal aspect-[4/3] w-full lg:col-span-3 lg:aspect-auto" />
+
+      {/* the atelier plate: address, hours, contact as one ledger */}
+      <div class="reveal border border-border lg:col-span-2" style="--reveal-delay: 80ms">
+        <div class="border-b border-border p-6">
+          <h3 class="flex items-center gap-2 font-secondary text-base uppercase tracking-[0.08em] text-foreground">
+            <svg class="size-4 text-tertiary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            Address
+          </h3>
+          <address class="mt-3 text-sm not-italic leading-relaxed text-muted-foreground">
+            123 Street Name<br />
+            City, Postcode<br />
+            Country
+          </address>
+        </div>
+
+        <div class="border-b border-border p-6">
+          <h3 class="flex items-center gap-2 font-secondary text-base uppercase tracking-[0.08em] text-foreground">
+            <svg class="size-4 text-tertiary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M12 7v5l3 3"></path>
+            </svg>
+            Sitting hours
+          </h3>
+          <dl class="mt-3 space-y-2">
+            {hours.map((row) => (
+              <div class="flex justify-between text-sm">
+                <dt class="text-muted-foreground">{row.days}</dt>
+                <dd class="font-mono text-xs tracking-[0.06em] text-foreground">{row.time}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
+        <div class="p-6">
+          <h3 class="flex items-center gap-2 font-secondary text-base uppercase tracking-[0.08em] text-foreground">
+            <svg class="size-4 text-tertiary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 2 .7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.9.6 2.8.7a2 2 0 0 1 1.7 2Z"></path>
+            </svg>
+            Contact
+          </h3>
+          <p class="mt-3 text-sm text-muted-foreground">
+            +00 000 000 000<br />
+            hello@borismartinez.example
+          </p>
+        </div>
+
+        <a
+          href="#"
+          title="Get directions to the Boris Martinez Tattoo studio"
+          class="flex items-center justify-center gap-2 border-t border-border px-5 py-4 font-secondary text-xs uppercase tracking-[0.12em] text-foreground transition-colors hover:text-tertiary-300"
+        >
+          Get directions
+          <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M7 17 17 7M8 7h9v9"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

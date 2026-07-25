@@ -1,59 +1,41 @@
 ---
+/* -----------------------------------------------------------------
+   DIRECTION CONTRACT — The Assay Catalog (seed 2c2399eb, user-chosen)
+
+   THESIS: Every tattoo leaves this studio hallmarked like silver —
+   entered in a register with its assay stamp. The home page is that
+   register, refusing the category's dark photo-grid + gothic type.
+   OWN-WORLD: matte graphite velvet ground, engraved Cinzel
+   inscriptions, Archivo register hand, JetBrains Mono assay marks,
+   beige only where a document or seal exists. Sharp corners,
+   hairline rules, no card shadows.
+   STORY: visitor meets the master mark (living mercury), reads the
+   house standard, walks the register, learns care of the metal, and
+   requests a commission.
+   FIRST VIEWPORT: full velvet field; centered liquid-mercury drop
+   (WebGL); engraved wordmark above; stamped commission seal below.
+   FORM: silversmith assay catalog, candidate 3 by resonance, staging
+   is the editorial ledger scroll (split-corridor staging rejected:
+   it fragments a premium linear reading); seed key 2c2399eb.
+   ----------------------------------------------------------------- */
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { SITE } from '@config/site';
+import Hero from '@components/sections/Hero.astro';
+import About from '@components/sections/About.astro';
+import Portfolio from '@components/sections/Portfolio.astro';
+import Pricing from '@components/sections/Pricing.astro';
+import Health from '@components/sections/Health.astro';
+import Location from '@components/sections/Location.astro';
+import Booking from '@components/sections/Booking.astro';
 ---
 
 <BaseLayout>
-  <main class="mx-auto max-w-3xl px-6 py-16">
-    <h1 class="font-secondary text-5xl text-foreground">{SITE.name}</h1>
-    <p class="mt-4 max-w-prose text-lg text-muted-foreground">{SITE.description}</p>
-
-    <section class="mt-12">
-      <h2 class="font-secondary text-2xl">Design system preview</h2>
-
-      <p class="mt-2 text-sm text-muted-foreground">
-        Live tokens from <code class="rounded-sm bg-muted px-1">src/styles/global.css</code> —
-        rebrand by editing the OKLCH scales.
-      </p>
-
-      <div class="mt-6 grid gap-4 sm:grid-cols-3">
-        <div class="rounded-lg bg-primary-500 p-4 text-white">Primary 500</div>
-        <div class="rounded-lg bg-secondary-500 p-4 text-white">Secondary 500</div>
-        <div class="rounded-lg bg-tertiary-500 p-4 text-surface-950">Tertiary 500</div>
-      </div>
-
-      <div class="mt-6 flex flex-wrap gap-2 text-2xs">
-        <span class="rounded-md bg-primary-100 px-2 py-1 text-primary-900">primary-100</span>
-        <span class="rounded-md bg-primary-300 px-2 py-1 text-primary-900">primary-300</span>
-        <span class="rounded-md bg-primary-500 px-2 py-1 text-white">primary-500</span>
-        <span class="rounded-md bg-primary-700 px-2 py-1 text-white">primary-700</span>
-        <span class="rounded-md bg-primary-900 px-2 py-1 text-white">primary-900</span>
-      </div>
-
-      <div class="mt-8 space-y-1">
-        <p class="text-2xs">text-2xs · The quick ink flows</p>
-        <p class="text-xs">text-xs · The quick ink flows</p>
-        <p class="text-sm">text-sm · The quick ink flows</p>
-        <p class="text-base">text-base · The quick ink flows</p>
-        <p class="text-lg">text-lg · The quick ink flows</p>
-        <p class="text-xl">text-xl · The quick ink flows</p>
-        <p class="text-2xl">text-2xl · The quick ink flows</p>
-        <p class="text-3xl">text-3xl · The quick ink flows</p>
-      </div>
-
-      <div class="mt-8 flex flex-wrap gap-3">
-        <span class="rounded-none border border-border px-3 py-2">rounded-none</span>
-        <span class="rounded-sm border border-border px-3 py-2">rounded-sm</span>
-        <span class="rounded-md border border-border px-3 py-2">rounded-md</span>
-        <span class="rounded-lg border border-border px-3 py-2">rounded-lg</span>
-        <span class="rounded-xl border border-border px-3 py-2">rounded-xl</span>
-        <span class="rounded-2xl border border-border px-3 py-2">rounded-2xl</span>
-        <span class="rounded-3xl border border-border px-3 py-2">rounded-3xl</span>
-        <span class="rounded-full border border-border px-3 py-2">rounded-full</span>
-      </div>
-
-      <p class="mt-8 font-secondary text-2xl">Secondary font — display heading</p>
-      <p class="font-primary text-base">Primary font — body / UI text</p>
-    </section>
+  <main>
+    <Hero />
+    <Portfolio />
+    <About />
+    <Pricing />
+    <Health />
+    <Location />
+    <Booking />
   </main>
 </BaseLayout>

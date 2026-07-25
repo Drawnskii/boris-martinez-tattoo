@@ -1,0 +1,63 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ImagePlaceholder from '@components/ImagePlaceholder.astro';
+import AssayMark from '@components/AssayMark.astro';
+import CtaButton from '@components/CtaButton.astro';
+import { BASE_URL } from '@config/site';
+
+/* The full register: masonry of registered pieces. Serials, placements
+   and sessions are illustrative until real pieces are supplied. */
+const aspects = [
+  'aspect-[3/4]',
+  'aspect-square',
+  'aspect-[4/5]',
+  'aspect-[3/5]',
+  'aspect-[4/3]',
+  'aspect-[2/3]',
+];
+
+const placements = ['Forearm', 'Shoulder', 'Back', 'Calf', 'Sternum', 'Upper arm'];
+
+const entries = Array.from({ length: 18 }, (_, i) => ({
+  serial: `No. ${String(42 - i).padStart(3, '0')}`,
+  placement: placements[i % placements.length],
+  session: i < 8 ? '2026' : '2025',
+  aspect: aspects[i % aspects.length],
+}));
+---
+
+<BaseLayout title="The Register — Boris Martinez Tattoo" description="The full register — every piece struck by Boris Martinez Tattoo, each entered with its assay mark.">
+  <main class="shell py-16 md:py-24">
+    <div class="reveal flex flex-wrap items-end justify-between gap-6 border-b border-border pb-8">
+      <div>
+        <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">Entry — The Register</p>
+        <h1 class="mt-3 font-secondary text-4xl tracking-[0.02em] text-foreground md:text-5xl">The register</h1>
+        <p class="mt-4 max-w-xl text-muted-foreground">
+          Every piece struck, newest first — each entered with its assay mark:
+          serial, placement, and session.
+        </p>
+      </div>
+      <CtaButton href={`${BASE_URL}/`} variant="outline" title="Back to the home page — Boris Martinez Tattoo" class="px-5 py-2.5 text-xs">
+        &larr; Back to the front
+      </CtaButton>
+    </div>
+
+    {/* masonry: columns fill vertically, break-inside-avoid keeps entries whole */}
+    <div class="mt-12 columns-2 gap-6 md:columns-3 xl:columns-4">
+      {entries.map((entry, i) => (
+        <figure class="reveal mb-6 break-inside-avoid border border-border" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
+          <ImagePlaceholder label={`Piece ${entry.serial}`} class:list={[entry.aspect, 'w-full border-0']} />
+          <figcaption class="border-t border-border bg-raised px-4 py-3">
+            <AssayMark serial={entry.serial} placement={entry.placement} session={entry.session} />
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+
+    <div class="reveal mt-14 border-t border-border pt-10 text-center">
+      <CtaButton href={`${BASE_URL}/#booking`} title="Request a custom tattoo commission" class="px-8 py-3.5 text-sm">
+        Request your own entry
+      </CtaButton>
+    </div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,73 @@
+---
+import SectionHeading from '@components/SectionHeading.astro';
+import CtaButton from '@components/CtaButton.astro';
+
+// No firm numbers are published: every piece is quoted at consultation.
+// Final rates arrive with the client's supplied pricing content.
+const classes = [
+  {
+    mark: 'Class I',
+    name: 'Small pieces',
+    blurb: 'Minimal marks and fine symbols — single sittings of a few hours.',
+    terms: ['Up to roughly 5 cm', 'Single sitting', 'Touch-up included'],
+  },
+  {
+    mark: 'Class II',
+    name: 'Medium pieces',
+    blurb: 'Palm-to-forearm designs with room for detail and shading.',
+    terms: ['Up to roughly 15 cm', 'Design consultation', 'Single sitting', 'Touch-up included'],
+  },
+  {
+    mark: 'Class III',
+    name: 'Large & custom',
+    blurb: 'Sleeves, back pieces, and fully bespoke liquid-metal work.',
+    terms: ['Custom-drawn artwork', 'Multi-sitting planning', 'Priority entry in the books'],
+  },
+];
+---
+
+<section id="pricing" class="flex min-h-svh flex-col justify-center py-16 md:py-24">
+  <div class="shell">
+    <div class="reveal">
+      <SectionHeading
+        tag="Entry III — The Terms"
+        title="Commissions"
+        subtitle="Every piece is priced at consultation — size, placement, and detail set the quote. No two entries in the register are priced alike."
+      />
+    </div>
+
+    <div class="mt-14 border-t border-border">
+      {classes.map((tier, i) => (
+        <article class="reveal grid gap-6 border-b border-border py-10 md:grid-cols-12 md:items-center" style={`--reveal-delay: ${i * 80}ms`}>
+          <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400 md:col-span-2">
+            {tier.mark}
+          </p>
+          <div class="md:col-span-4">
+            <h3 class="font-secondary text-xl tracking-[0.02em] text-foreground">{tier.name}</h3>
+            <p class="mt-2 text-sm text-muted-foreground">{tier.blurb}</p>
+          </div>
+          <ul class="space-y-2 md:col-span-4">
+            {tier.terms.map((term) => (
+              <li class="flex items-center gap-3 text-sm text-muted-foreground">
+                <span class="size-1 shrink-0 bg-tertiary-400" aria-hidden="true"></span>
+                {term}
+              </li>
+            ))}
+          </ul>
+          <CtaButton
+            href="#booking"
+            title={`Request a quote — ${tier.name} tattoo`}
+            variant={i === 2 ? 'paper' : 'outline'}
+            class="px-6 py-3 text-xs md:col-span-2"
+          >
+            Request a quote
+          </CtaButton>
+        </article>
+      ))}
+    </div>
+
+    <p class="reveal mt-8 text-center font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
+      A deposit confirms every sitting — deducted from the final price
+    </p>
+  </div>
+</section>

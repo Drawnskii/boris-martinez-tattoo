@@ -1,6 +1,8 @@
-# Pole Tattoo Website
+# Boris Martinez Tattoo Website
 
-Monorepo for the Pole Tattoo website. The frontend is an [Astro](https://astro.build) + TypeScript app; a backend service will be added in later iterations alongside it. Everything is managed with [pnpm](https://pnpm.io) workspaces.
+Monorepo for Boris Martinez. The frontend is an [Astro](https://astro.build) + TypeScript app; a backend service will be added in later iterations alongside it. Everything is managed with [pnpm](https://pnpm.io) workspaces.
+
+> Workspace packages are scoped under `@boris-martinez-tattoo/` (e.g. `@boris-martinez-tattoo/web`).
 
 ---
 
@@ -23,14 +25,14 @@ Monorepo for the Pole Tattoo website. The frontend is an [Astro](https://astro.b
 The repository uses **pnpm workspaces**. The root directory is the *workspace owner*; each sub-folder is an independent *workspace package* with its own `package.json`.
 
 ```
-pole-tattoo-website/
+boris-martinez-tattoo/
 ├── package.json            # private root — workspace-level scripts only
 ├── pnpm-workspace.yaml     # workspace globs: apps/* and packages/*
 ├── pnpm-lock.yaml          # single shared lockfile
 ├── .gitignore
 ├── .vscode/                # committed editor config (see Editor setup)
 ├── apps/
-│   └── web/                # @pole-tattoo/web — the Astro frontend
+│   └── web/                # @boris-martinez-tattoo/web — the Astro frontend
 └── packages/               # (reserved) shared libraries consumed by several apps
 ```
 
@@ -40,7 +42,7 @@ pole-tattoo-website/
 ### Rules of the monorepo
 
 - The root `package.json` is `private: true` — it is never published.
-- Every workspace package is scoped under `@pole-tattoo/` (e.g. `@pole-tattoo/web`) to avoid name clashes on npm.
+- Every workspace package is scoped under `@boris-martinez-tattoo/` (e.g. `@boris-martinez-tattoo/web`) to avoid name clashes on npm.
 - There is **one** `pnpm-lock.yaml` at the root for the whole monorepo — never commit lockfiles inside individual apps.
 
 ### Workspace-level scripts (run from the repo root)
@@ -57,16 +59,16 @@ pole-tattoo-website/
 
 ```bash
 mkdir apps/api
-pnpm --filter "@pole-tattoo/api" init      # or cd apps/api && pnpm init, then name it @pole-tattoo/api
+pnpm --filter "@boris-martinez-tattoo/api" init      # or cd apps/api && pnpm init, then name it @boris-martinez-tattoo/api
 pnpm install                                # from the root — re-links the workspace
 ```
 
 ### Adding a shared library consumed by both apps
 
 ```bash
-pnpm create ./packages/core                 # name it @pole-tattoo/core
-pnpm --filter @pole-tattoo/web  add @pole-tattoo/core --workspace
-pnpm --filter @pole-tattoo/api  add @pole-tattoo/core --workspace
+pnpm create ./packages/core                 # name it @boris-martinez-tattoo/core
+pnpm --filter @boris-martinez-tattoo/web  add @boris-martinez-tattoo/core --workspace
+pnpm --filter @boris-martinez-tattoo/api  add @boris-martinez-tattoo/core --workspace
 ```
 
 ---
@@ -82,12 +84,24 @@ Presentation  →  Application  →  Domain  ←  Infrastructure
 ```
 apps/web/src/
 ├── pages/            # Presentation — Astro routes (.astro). Thin: compose layouts/components and call application services.
-├── layouts/          # Presentation — page layouts
+│   ├── index.astro       # Home — hero/about/portfolio/pricing/health/location/booking sections
+│   ├── gallery.astro     # Full portfolio (Pinterest-style masonry)
+│   └── about.astro       # Full artist bio (blog-style article)
+├── layouts/          # Presentation — page layouts (BaseLayout wires global.css + Navbar)
 ├── components/       # Presentation — reusable UI components (.astro)
+│   ├── Navbar.astro          # header | left | right variant via PUBLIC_NAV_LAYOUT
+│   ├── NavBrand.astro        # wax-seal medallion + wordmark (shared by all nav layouts)
+│   ├── NavCta.astro          # nav-sized paper CTA
+│   ├── NavMobileMenu.astro   # collapsible mobile menu + toggle script
+│   ├── CtaButton.astro       # the two action styles: paper (primary) / outline (secondary)
+│   ├── SectionHeading.astro  # eyebrow + title + subtitle for sections
+│   ├── AssayMark.astro       # serial · placement · session stamp
+│   ├── ImagePlaceholder.astro# stand-in for images/logos/icons (swap for real assets later)
+│   └── sections/             # one component per home-page section
 ├── application/     # Application — use cases / services that orchestrate domain logic
 ├── domain/          # Domain — entities, value objects, repository *interfaces*, business rules. No framework deps.
 ├── infrastructure/ # Infrastructure — adapters: HTTP clients, CMS/API repositories implementing the domain interfaces
-└── config/          # Site / app configuration constants
+└── config/          # Site / app configuration constants (site.ts: SITE, NAV_LAYOUT, NAV_LINKS)
 ```
 
 ### Dependency rule
@@ -128,12 +142,19 @@ The project extends `astro/tsconfigs/strict`. Pages are `.astro` files; layer lo
 
 The web app ships with **Tailwind CSS v4** wired through its official Vite plugin — the recommended integration for Astro 7. There is no `tailwind.config.js`: every token lives in `@theme` blocks inside a single stylesheet, so the design system is pure CSS.
 
+The committed visual world is **The Assay Catalog** — every tattoo treated as a hallmarked piece of precious metal, entered in a register. The full system rules live in [`apps/web/DESIGN.md`](apps/web/DESIGN.md); the durable product context in [`apps/web/PRODUCT.md`](apps/web/PRODUCT.md). Key facts:
+
+- **Palette (OKLCH, dark-dominant):** `primary` = graphite velvet (dark gray, page ground), `secondary` = struck silver (all type), `tertiary` = certificate beige (documents, seals, stamps, focus rings only).
+- **Fonts:** Cinzel (engraved display caps), Archivo (body), JetBrains Mono (assay serials/stamps) — self-hosted via `@fontsource/*`, imported in `BaseLayout.astro`.
+- **Shape:** sharp corners (0–2px); roundness only for the wax seal and the mercury drop.
+- **Signature:** the liquid-mercury drop (`src/components/shaders/mercury-drop/MercuryDrop.astro`) — a WebGL noise-displaced chrome drop, honors the studio's liquid-metal tattoo work.
+
 ```
 apps/web/
 ├── astro.config.mjs        # registers @tailwindcss/vite
 └── src/
     ├── styles/global.css   # ← the whole design system (theme + base layer)
-    ├── layouts/BaseLayout.astro   # imports global.css; <slot/> for pages
+    ├── layouts/BaseLayout.astro   # imports global.css + fonts; <slot/> for pages
     └── pages/index.astro          # uses BaseLayout + the utility classes
 ```
 
@@ -152,52 +173,55 @@ apps/web/
 
 ### Tokens
 
-Everything below is the default, computed in **OKLCH** (`oklch(L C H)`). To re-skin the site you only change the values in `src/styles/global.css`; no other file needs editing because Tailwind regenerates the utilities from the variables.
+Everything below is authored in **OKLCH** (`oklch(L C H)`). To re-skin the site you only change the values in `src/styles/global.css`; no other file needs editing because Tailwind regenerates the utilities from the variables.
 
 | Group | Token prefix | What it produces |
 | --- | --- | --- |
-| Color scales (50→950, 11 steps each) | `--color-primary-*` `--color-secondary-*` `--color-tertiary-*` `--color-surface-*` | `bg-primary-500`, `text-secondary-700`, `border-tertiary-200`, … |
-| Semantic aliases | `--color-background` · `--color-foreground` · `--color-muted` · `--color-muted-foreground` · `--color-border` · `--color-ring` | `bg-background`, `text-muted-foreground`, `border-border`, `ring-*` |
-| Fonts | `--font-primary` · `--font-secondary` | `font-primary` (UI / body), `font-secondary` (display headings) |
+| Color scales (50→950, 11 steps each) | `--color-primary-*` `--color-secondary-*` `--color-tertiary-*` | `bg-primary-500`, `text-secondary-700`, `border-tertiary-200`, … |
+| Semantic aliases | `--color-background` · `--color-foreground` · `--color-muted` · `--color-muted-foreground` · `--color-border` · `--color-ring` · `--color-raised` · `--color-paper` · `--color-paper-foreground` · `--color-accent` | `bg-background`, `text-muted-foreground`, `bg-paper`, `ring-*` |
+| Fonts | `--font-primary` · `--font-secondary` · `--font-mono` | `font-primary` (body), `font-secondary` (engraved display), `font-mono` (assay marks) |
 | Font sizes (with line-heights) | `--text-2xs` … `--text-9xl` + `--text-2xs--line-height` … | `text-2xs`, `text-sm`, `text-3xl`, … |
 | Border radius | `--radius-none` · `--radius-xs` … `--radius-4xl` · `--radius-full` | `rounded-sm`, `rounded-xl`, `rounded-full`, … |
 | Spacing multiplier | `--spacing` (default `0.25rem`) | every `p-*`, `m-*`, `gap-*`, `w-*`, `h-*` step |
 | Breakpoints | `--breakpoint-sm` … `--breakpoint-2xl` | `sm:`, `md:`, `lg:`, `xl:`, `2xl:` |
+| Shell container | `--shell-max` (default `72rem`) · `--shell-pad` (default `1.5rem`) | the `.shell` and `.shell-start` utilities (see below) |
 
 #### Color scales
 
-Each scale has 11 steps, authored in OKLCH. The defaults are placeholders chosen to look right out of the box — adjust the three hue angles to rebrand:
+Each scale has 11 steps, authored in OKLCH:
 
-| Scale | Default direction | Hue |
+| Scale | Role | Hue |
 | --- | --- | --- |
-| `primary` | deep crimson "ink" | ≈ 25 |
-| `secondary` | cool slate / steel blue | ≈ 230 |
-| `tertiary` | amber / gold highlight | ≈ 85 |
-| `surface` | warm graphite neutral ramp | ≈ 240 |
+| `primary` | graphite velvet — the dark page ground | ≈ 90 (warm, near-neutral) |
+| `secondary` | struck silver — all text and engraving | ≈ 260 (near-neutral) |
+| `tertiary` | certificate beige — paper, wax, focus | ≈ 85 |
 
-Each color is written as `oklch(<lightness> <chroma> <hue>)`. To shift a brand color without redesigning the ramp, change only the `<hue>` numbers across the 11 steps; the lightness/chroma progression stays consistent. A handy reference for the math: <https://oklch.com/>.
-
-The semantic aliases map onto `surface-*` and `primary-500`:
+The semantic aliases map the dark-dominant register onto the ramps:
 
 ```css
---color-background:        var(--color-surface-50);
---color-foreground:       var(--color-surface-900);
---color-muted:            var(--color-surface-200);
---color-muted-foreground: var(--color-surface-600);
---color-border:           var(--color-surface-200);
---color-ring:             var(--color-primary-500);
+--color-background:        var(--color-primary-950);
+--color-foreground:       var(--color-secondary-100);
+--color-muted:            var(--color-primary-800);
+--color-muted-foreground: var(--color-secondary-400);
+--color-border:           var(--color-primary-700);
+--color-ring:             var(--color-tertiary-400);
+--color-raised:           var(--color-primary-900);
+--color-paper:            var(--color-tertiary-100);
+--color-paper-foreground: var(--color-primary-900);
+--color-accent:           var(--color-tertiary-400);
 ```
 
-Prefer semantic tokens (`bg-background`, `text-muted-foreground`) over raw scale steps in components — they are the single point of change when a dark/light theme is added later.
+Prefer semantic tokens (`bg-background`, `text-muted-foreground`, `bg-paper`) over raw scale steps in components — they are the single point of change when the world is retuned.
 
 #### Fonts
 
-Two families are exposed:
+Three families are exposed (self-hosted via `@fontsource`):
 
-- `font-primary` — UI / body. Default stack starts with `InterVariable` / `Inter` and falls back to the system sans stack.
-- `font-secondary` — display / headings. Default stack starts with `Fraunces` / `Playfair Display` and falls back to a serif stack.
+- `font-primary` — UI / body: **Archivo**.
+- `font-secondary` — engraved display / headings: **Cinzel** (inscription caps; headings get it automatically through the `@layer base` rule in `global.css`).
+- `font-mono` — assay serials, dates, stamps: **JetBrains Mono** (functional registration data only, never decoration).
 
-Neither font is loaded yet — install them when the typography is finalised (self-host via `@fontsource`/`@fontsource-variable` is recommended), then update the stacks in `--font-primary` / `--font-secondary`. Headings automatically use the secondary font through the `@layer base` rule in `global.css` (`h1`–`h6 { font-family: var(--font-secondary); }`).
+The world rules that govern them (The Paper Rule, The Two-Ink Rule, The Chisel Rule) are in `apps/web/DESIGN.md` — read it before adding new surfaces.
 
 #### Font sizes
 
@@ -214,8 +238,6 @@ Neither font is loaded yet — install them when the typography is finalised (se
 | `text-4xl` | 36px | 40px |
 | `text-5xl` → `text-9xl` | 48 → 128px | 1 (display sizes) |
 
-Edit any `--text-<step>` / `--text-<step>--line-height` pair to retune the type scale; the matching `text-<step>` utility and its default line-height update automatically.
-
 #### Border radius
 
 | Utility | Value |
@@ -231,6 +253,33 @@ Edit any `--text-<step>` / `--text-<step>--line-height` pair to retune the type 
 | `rounded-4xl` | `32px` |
 | `rounded-full` | `9999px` |
 
+The Assay Catalog world uses `rounded-none` for nearly everything; `rounded-full` only for the wax seal.
+
+#### Shell — one site container width
+
+Every site-level container (header bar, section inner, page main, footer) reads the same two tokens through one utility, so retuning the site width is a one-line change:
+
+| Utility | What it does |
+| --- | --- |
+| `.shell` | centered, capped at `--shell-max`, padded `--shell-pad` — apply to the outer wrapper of every header / section / footer / page main; child content aligns to the same edges with no per-element calculation |
+
+```css
+/* the tokens, in @theme */
+--shell-max: 72rem;
+--shell-pad: 1.5rem;
+
+/* the utility, in global.css */
+@utility shell { width: 100%; max-width: var(--shell-max); margin-inline: auto; padding-inline: var(--shell-pad); }
+```
+
+Edit `--shell-max` / `--shell-pad` → every container retunes. A narrower page or section (About article, Booking form) overrides the token on the element, not the utility:
+
+```astro
+<main class="shell" style="--shell-max: 48rem">   <!-- keeps .shell padding, halves the cap -->
+```
+
+The Hero's gradient veil spans the viewport edge-to-edge while its text column rides the same `.shell` wrapper as every other section, so the heading aligns with the header and the sections below — no `calc()` anywhere. Per-element measure widths (`max-w-md`, `max-w-2xl`, `max-w-[65ch]`) are left untouched — they govern readability line lengths, not site layout.
+
 ### Using the design system in a component
 
 ```astro
@@ -239,27 +288,24 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 ---
 
 <BaseLayout>
-  <section class="rounded-xl border border-border bg-background p-6">
-    <h2 class="font-secondary text-2xl text-foreground">Heading</h2>
-    <p class="mt-2 text-sm text-muted-foreground">Body text…</p>
-    <button class="mt-4 inline-flex items-center rounded-lg
-                   bg-primary-600 px-4 py-2 text-white
-                   hover:bg-primary-500 transition focus-visible:ring-2">
-      Action
+  <section class="border border-border bg-background p-6">
+    <p class="font-mono text-2xs uppercase tracking-[0.14em] text-tertiary-400">Entry tag</p>
+    <h2 class="mt-2 font-secondary text-2xl text-foreground">Engraved heading</h2>
+    <p class="mt-2 text-sm text-muted-foreground">Register body text…</p>
+    <button class="mt-4 inline-flex items-center bg-paper px-6 py-3
+                   font-secondary text-xs uppercase tracking-[0.12em] text-paper-foreground
+                   transition hover:bg-tertiary-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+      Stamped action
     </button>
   </section>
 </BaseLayout>
 ```
 
-### Previewing the tokens
-
-`src/pages/index.astro` already renders a small swatch + type + radius preview using the live tokens — run `pnpm dev` and open <http://localhost:4321> to see the scales, type scale, radius scale and both fonts together. Re-tune values in `src/styles/global.css` and the page hot-reloads.
-
 ### Verifying the build
 
 ```bash
-pnpm --filter @pole-tattoo/web check   # type checks .astro + .ts
-pnpm --filter @pole-tattoo/web build    # compiles Tailwind v4 + Astro → dist/
+pnpm --filter @boris-martinez-tattoo/web check   # type checks .astro + .ts
+pnpm --filter @boris-martinez-tattoo/web build    # compiles Tailwind v4 + Astro → dist/
 ```
 
 The Tailwind v4 build only emits the utilities actually used on the page (just-in-time, automatic content detection — no `content` array to maintain).
@@ -288,12 +334,12 @@ pnpm install --frozen-lockfile   # CI / reproducible installs
 
 ### Working with a specific workspace
 
-Use `--filter <package-name>`. The package name is the `name` field in that app's `package.json` (`@pole-tattoo/web`):
+Use `--filter <package-name>`. The package name is the `name` field in that app's `package.json` (`@boris-martinez-tattoo/web`):
 
 ```bash
-pnpm --filter @pole-tattoo/web add astro-icon       # add a dependency to web only
-pnpm --filter @pole-tattoo/web exec astro --version # run a binary *inside* the web workspace
-pnpm --filter @pole-tattoo/web dev                   # run only the web dev script
+pnpm --filter @boris-martinez-tattoo/web add astro-icon       # add a dependency to web only
+pnpm --filter @boris-martinez-tattoo/web exec astro --version # run a binary *inside* the web workspace
+pnpm --filter @boris-martinez-tattoo/web dev                   # run only the web dev script
 ```
 
 ### Working across all workspaces
@@ -319,7 +365,7 @@ Run from the repo root:
 
 ```bash
 pnpm lint                                  # lint every workspace
-pnpm --filter @pole-tattoo/web lint --fix  # auto-fix lint issues in web
+pnpm --filter @boris-martinez-tattoo/web lint --fix  # auto-fix lint issues in web
 pnpm check                                 # astro check — TypeScript diagnostics for .astro + .ts
 ```
 
@@ -354,15 +400,23 @@ pnpm install   # only the first time, or after pulling changes that touched depe
 pnpm dev
 ```
 
-Astro's dev server starts at <http://localhost:4321> with hot reload. Two optional environment variables control the site URL / base path (useful for matching your production deployment):
+Astro's dev server starts at <http://localhost:4321> with hot reload. Optional environment variables control the site URL / base path and the navbar layout (see `.env.example` in `apps/web`):
+
+| Variable | Values | Default | Effect |
+| --- | --- | --- | --- |
+| `PUBLIC_NAV_LAYOUT` | `header` \| `left` \| `right` | `header` | Navbar renders as a sticky top header, or as a fixed left/right sidebar on desktop (`lg+`) with a top-header fallback on mobile |
+| `PUBLIC_ASTRO_SITE` | URL | `http://localhost:4321` | Canonical site URL (`astro.config.mjs` → `site`) |
+| `PUBLIC_ASTRO_BASE` | path | `/` | Base path when deployed under a subpath |
 
 ```bash
 # PowerShell
-$env:PUBLIC_ASTRO_SITE="https://pole-tatto.example.com"; $env:PUBLIC_ASTRO_BASE="/"; pnpm dev
+$env:PUBLIC_NAV_LAYOUT="right"; $env:PUBLIC_ASTRO_SITE="https://boris-martinez-tattoo.com"; pnpm dev
 
 # macOS / Linux
-PUBLIC_ASTRO_SITE="https://pole-tatto.example.com" PUBLIC_ASTRO_BASE="/" pnpm dev
+PUBLIC_NAV_LAYOUT="right" PUBLIC_ASTRO_SITE="https://boris-martinez-tattoo.com" pnpm dev
 ```
+
+`PUBLIC_*` variables are inlined at build time, so restart the dev server after changing them.
 
 ---
 
@@ -377,35 +431,21 @@ pnpm preview     # serve that build locally to verify it before deploying
 
 ### Deploy
 
-`apps/web/dist/` is plain HTML/CSS/JS — host it on any static host (Vercel, Netlify, Cloudflare Pages, GitHub Pages, S3 + CDN, …).
+See [DEPLOY.md](DEPLOY.md) for full setup guide — GitHub Variables, provider switching, troubleshooting.
 
-Configure your host with:
+`apps/web/dist/` is plain HTML/CSS/JS — host it on any static host (Vercel, Netlify, Cloudflare Pages, GitHub Pages, S3 + CDN, …).
 
 | Setting | Value |
 | --- | --- |
-| Build command | `pnpm --filter @pole-tattoo/web build` |
+| Build command | `pnpm --filter @boris-martinez-tattoo/web build` |
 | Output / publish directory | `apps/web/dist` |
 | Node version | `22.12` or newer |
-
-### GitHub Pages (project page under a subpath)
-
-If the site is served from `https://<user>.github.io/pole-tatto-website/`, set the base path at build time:
-
-```bash
-# PowerShell
-$env:PUBLIC_ASTRO_BASE="/pole-tatto-website/"; pnpm --filter @pole-tattoo/web build
-
-# macOS / Linux
-PUBLIC_ASTRO_BASE="/pole-tatto-website/" pnpm --filter @pole-tattoo/web build
-```
-
-Then publish the contents of `apps/web/dist/` (e.g. to the `gh-pages` branch or via GitHub Actions).
 
 ---
 
 ## `apps/web` vs. `web` at the root
 
-You asked whether `apps/web/` (current) should be flattened to `pole-tattoo-website/web/`. **Keep `apps/web`.**
+You asked whether `apps/web/` (current) should be flattened to `boris-martinez-tattoo/web/`. **Keep `apps/web`.**
 
 - A backend is coming. `apps/web` + `apps/api` keeps every deployable under one predictable folder, while a flat layout ends up mixing apps with shared packages at the root.
 - `packages/*` is already wired for shared libraries both apps will consume; the `apps/` + `packages/` split is the convention pnpm and Turbo/Nx expect, so tooling and contributors recognise it instantly.

@@ -1,0 +1,77 @@
+name: Deploy Boris Martinez Tattoo Web
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: 'Deployment target override'
+        required: false
+        type: string
+
+# ---- Configure via Environment Variables (scoped to "github-pages" environment) ----
+# Settings > Environments > github-pages > Add variable
+#   PUBLIC_ASTRO_SITE   – Canonical URL,     e.g. "https://Drawnskii.github.io"
+#   PUBLIC_ASTRO_BASE   – Base path,          e.g. "/boris-martinez-tattoo/"
+#   PUBLIC_NAV_LAYOUT   – Navbar layout,      e.g. "left", "header", "right"
+#   DEPLOY_TARGET       – "github-pages" (default) — for future provider switching
+env:
+  SITE_URL: ${{ vars.PUBLIC_ASTRO_SITE || 'https://Drawnskii.github.io' }}
+  BASE_PATH: ${{ vars.PUBLIC_ASTRO_BASE || '/boris-martinez-tattoo/' }}
+  NAV_LAYOUT: ${{ vars.PUBLIC_NAV_LAYOUT || 'left' }}
+
+permissions:
+  contents: read
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.13.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter @boris-martinez-tattoo/web build
+        env:
+          PUBLIC_ASTRO_SITE: ${{ env.SITE_URL }}
+          PUBLIC_ASTRO_BASE: ${{ env.BASE_PATH }}
+          PUBLIC_NAV_LAYOUT: ${{ env.NAV_LAYOUT }}
+
+      - if: ${{ (github.event.inputs.deploy_target || vars.DEPLOY_TARGET || 'github-pages') == 'github-pages' }}
+        uses: actions/configure-pages@v4
+        with:
+          static_site_generator: astro
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'apps/web/dist'
+
+  deploy-github-pages:
+    if: ${{ (github.event.inputs.deploy_target || vars.DEPLOY_TARGET || 'github-pages') == 'github-pages' }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

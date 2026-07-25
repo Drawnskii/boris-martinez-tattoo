@@ -1,0 +1,44 @@
+---
+/* -----------------------------------------------------------------
+   NavBrand — wax-seal medallion + Cinzel wordmark. One component,
+   three placements (top header, left sidebar, right sidebar).
+   ----------------------------------------------------------------- */
+import { SITE, BASE_URL } from '@config/site';
+
+interface Props {
+  sealSize?: 'sm' | 'md';
+  /** Compact: stack the wordmark in two short lines — for narrow
+      placements (sidebars) where the full name can't fit one line. */
+  compact?: boolean;
+}
+
+const { sealSize = 'sm', compact = false } = Astro.props;
+
+const sealClass = sealSize === 'md'
+  ? 'size-10'
+  : 'size-9';
+
+/* Split "Boris Martinez Tattoo" into compact lines. Falls back to the
+   single-line name if the studio renames to something shorter. */
+const words = SITE.name.split(' ');
+const compactLines =
+  words.length > 2 ? [words.slice(0, -1).join(' '), words[words.length - 1]] : null;
+---
+
+<a href={`${BASE_URL}/`} class="group flex items-center gap-3" aria-label={`${SITE.name} — home`} title={`${SITE.name} — home`}>
+  <span
+    class={`flex ${sealClass} shrink-0 items-center justify-center rounded-full border border-tertiary-400/70 font-secondary text-sm tracking-[0.05em] text-tertiary-300 transition-colors group-hover:text-tertiary-200`}
+    aria-hidden="true"
+  >
+    BM
+  </span>
+  {compact && compactLines ? (
+    <span class="flex flex-col font-secondary text-sm font-semibold uppercase leading-snug tracking-[0.08em] text-foreground">
+      {compactLines.map((line) => <span>{line}</span>)}
+    </span>
+  ) : (
+    <span class="font-secondary text-base font-semibold tracking-[0.08em] uppercase text-foreground">
+      {SITE.name}
+    </span>
+  )}
+</a>
