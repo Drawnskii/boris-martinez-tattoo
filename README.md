@@ -262,7 +262,7 @@ The committed visual world is **The Assay Catalog** — every tattoo treated as 
 - **Palette (OKLCH, dark-dominant):** `primary` = graphite velvet (dark gray, page ground), `secondary` = struck silver (all type), `tertiary` = certificate beige (documents, seals, stamps, focus rings only).
 - **Fonts:** Cinzel (engraved display caps), Archivo (body), JetBrains Mono (assay serials/stamps) — self-hosted via `@fontsource/*`, imported in `BaseLayout.astro`.
 - **Shape:** sharp corners (0–2px); roundness only for the wax seal and the mercury drop.
-- **Signature:** the liquid-mercury drop (`src/components/shaders/mercury-drop/MercuryDrop.astro`) — a WebGL noise-displaced chrome drop, honors the studio's liquid-metal tattoo work.
+- **Signature:** the liquid-mercury drop (`src/components/shaders/mercury-drop/MercuryDrop.astro`) — a WebGL noise-displaced chrome drop, honors the artist's tattoo work.
 
 ```
 apps/web/

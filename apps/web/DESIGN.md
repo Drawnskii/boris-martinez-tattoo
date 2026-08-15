@@ -191,7 +191,7 @@ The dark-dominant silversmith's register: a warm graphite ground, near-white met
 
 One site container, one measure. The `.shell` utility centers every site-level wrapper at `--shell-max: 72rem` with `--shell-pad: 1.5rem` of inline padding; the header bar, every section inner, the page main, and the footer all read the same two tokens, so retuning the site width is one line and alignment is automatic. Narrower surfaces (the About article at 48rem, the Booking slip at 48rem) override the token on the element, not the utility.
 
-Home-page sections are each `min-h-svh` with `py-16 md:py-24`, stacked under hairline `border-y` rules; the visitor scrolls the register entry by entry. Internal two-column grids collapse to one column at the `md` breakpoint. Per-element line measures (`max-w-md`, `max-w-2xl`, `max-w-[65ch]`) govern readability, not site layout — they are independent of `.shell`.
+Home-page sections are each `min-h-svh` with `py-16 md:py-18`, stacked under hairline `border-y` rules; the visitor scrolls the register entry by entry. Internal two-column grids collapse to one column at the `md` breakpoint. Per-element line measures (`max-w-md`, `max-w-2xl`, `max-w-[65ch]`) govern readability, not site layout — they are independent of `.shell`.
 
 The navbar has three layouts selected by `PUBLIC_NAV_LAYOUT`: a sticky top `header` (default), or a fixed `lg:` `left` / `right` sidebar that collapses to a sticky top header on mobile. Sidebars are `w-64`; the content offset (`lg:pl-64` / `lg:pr-64`) is applied on the page wrapper. The hero's gradient veil spans the viewport edge-to-edge while its text column rides the same `.shell` edges as every other section, so the heading aligns with the header and the sections below with no `calc()` anywhere.
 

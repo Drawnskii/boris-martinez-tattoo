@@ -1,8 +1,9 @@
 export const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 export const SITE = {
-  name: 'Boris Martinez Tattoo',
-  description: 'Boris Martinez Tattoo — a hallmarked register of custom blackwork and liquid-metal tattoo commissions.',
+  name: 'Boris Martinez',
+  title: 'Boris Martinez — Blackwork Tattoos in LA, NY & NJ',
+  description: 'Boris Martinez official portfolio. Custom blackwork tattoo artist serving Los Angeles, New York, and New Jersey.',
 } as const;
 
 export type Site = typeof SITE;
@@ -31,8 +32,8 @@ export const NAV_LAYOUT: NavLayout =
    overlap content on lg+ screens. */
 export const NAV_CONTENT_OFFSET: Record<NavLayout, string> = {
   header: '',
-  left: 'lg:pl-64',
-  right: 'lg:pr-64',
+  left: 'lg:pl-56',
+  right: 'lg:pr-56',
 };
 
 /* -----------------------------------------------------------------

@@ -4,48 +4,35 @@ import SectionHeading from '@components/SectionHeading.astro';
 const chapters = [
   {
     numeral: '1',
-    title: 'Before the sitting',
+    title: 'Before Appointment',
     items: [
-      'Eat well and stay hydrated',
-      'Avoid alcohol for 24 hours before',
-      'Moisturise the area for a few days prior',
-      'Wear clothing that gives easy access',
+      'Eat well, stay hydrated, and get a full night’s sleep.',
+      'Avoid alcohol and recreational drugs for at least 48 hours.',
+      'Wear loose, clean clothes allowing easy access to the tattoo area.',
     ],
   },
   {
     numeral: '2',
-    title: 'Health conditions',
+    title: 'Health conditions & Concerns',
     items: [
-      'Tell us about allergies or skin conditions',
-      'Diabetes, heart conditions, blood disorders',
-      'Pregnancy or breastfeeding',
-      'Blood-thinning medication',
+      'Tell us about of any existing medical conditions or allergies.',
+      'Reschedule if you felt sick or had symptoms in the last 14 days.',
+      'Disclose conditions such as diabetes, blood disorders, pregnancy, or blood-thinning medication.',
     ],
   },
   {
     numeral: '3',
-    title: 'Studio hygiene',
+    title: 'Aftercare & Recovery',
     items: [
-      'Single-use sterile needles',
-      'Hospital-grade disinfection',
-      'Licensed & inspected studio',
-      'Fresh gloves for every client',
-    ],
-  },
-  {
-    numeral: '4',
-    title: 'Care of the metal',
-    items: [
-      'Keep the wrap on for 2–4 hours',
-      'Wash gently, pat dry, moisturise',
-      'No sun, pools or saunas for 2 weeks',
-      'Never pick at scabs',
+      'Clean and moisturize gently with unscented soap and recommended ointment.',
+      'Do not scratch, pick at scabs, or peel flaking skin during healing.',
+      'Avoid swimming, soaking, and direct sunlight for at least 2–3 weeks.',
     ],
   },
 ];
 ---
 
-<section id="health" class="flex min-h-svh flex-col justify-center border-y border-border bg-raised/50 py-16 md:py-24">
+<section id="health" class="flex min-h-svh flex-col justify-center border-y border-border bg-raised/50 py-16 md:py-18">
   <div class="shell">
     <div class="reveal">
       <SectionHeading
@@ -56,7 +43,7 @@ const chapters = [
     </div>
 
     {/* the care chapters: dark register cards, one per chapter */}
-    <div class="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-12 grid gap-px border border-border bg-border lg:grid-cols-3">
       {chapters.map((chapter, i) => (
         <article class="reveal bg-background p-6" style={`--reveal-delay: ${i * 80}ms`}>
           <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">
@@ -74,5 +61,12 @@ const chapters = [
         </article>
       ))}
     </div>
+    
+    <div class="flex justify-center">
+      <p class="reveal mt-8 text-center font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground max-w-2xl">
+        These recommendations make the tattooing process easier and improve comfort, endurance, and the overall experience.
+      </p>
+    </div>
+
   </div>
 </section>
