@@ -1,29 +1,31 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import ImagePlaceholder from '@components/ImagePlaceholder.astro';
+// import ImagePlaceholder from '@components/ImagePlaceholder.astro';
 import AssayMark from '@components/AssayMark.astro';
 import CtaButton from '@components/CtaButton.astro';
 import { BASE_URL } from '@config/site';
+import { PORTFOLIO_CATALOG, getMediaUrl } from '@domain/portfolio';
+import Image from '@components/Image.astro';
 
 /* The full register: masonry of registered pieces. Serials, placements
    and sessions are illustrative until real pieces are supplied. */
-const aspects = [
-  'aspect-[3/4]',
-  'aspect-square',
-  'aspect-[4/5]',
-  'aspect-[3/5]',
-  'aspect-[4/3]',
-  'aspect-[2/3]',
-];
+// const aspects = [
+//   'aspect-[3/4]',
+//   'aspect-square',
+//   'aspect-[4/5]',
+//   'aspect-[3/5]',
+//   'aspect-[4/3]',
+//   'aspect-[2/3]',
+// ];
 
-const placements = ['Forearm', 'Shoulder', 'Back', 'Calf', 'Sternum', 'Upper arm'];
+// const placements = ['Forearm', 'Shoulder', 'Back', 'Calf', 'Sternum', 'Upper arm'];
 
-const entries = Array.from({ length: 18 }, (_, i) => ({
-  serial: `No. ${String(42 - i).padStart(3, '0')}`,
-  placement: placements[i % placements.length],
-  session: i < 8 ? '2026' : '2025',
-  aspect: aspects[i % aspects.length],
-}));
+// const entries = Array.from({ length: 18 }, (_, i) => ({
+//   serial: `No. ${String(42 - i).padStart(3, '0')}`,
+//   placement: placements[i % placements.length],
+//   session: i < 8 ? '2026' : '2025',
+//   aspect: aspects[i % aspects.length],
+// }));
 ---
 
 <BaseLayout title="The Register — Boris Martinez Tattoo" description="The full register — every piece struck by Boris Martinez Tattoo, each entered with its assay mark.">
@@ -44,14 +46,22 @@ const entries = Array.from({ length: 18 }, (_, i) => ({
 
     {/* masonry: columns fill vertically, break-inside-avoid keeps entries whole */}
     <div class="mt-12 columns-2 gap-6 md:columns-3 xl:columns-4">
-      {entries.map((entry, i) => (
+      {PORTFOLIO_CATALOG.map((entry, i) => (
+        <figure class="reveal mb-6 break-inside-avoid border border-border" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
+          <Image src={getMediaUrl(entry.fileName, entry.type)} alt={entry.title} />
+          <figcaption class="border-t border-border bg-raised px-4 py-3">
+            <AssayMark serial={entry.id} placement={entry.placement} category={entry.category} />
+          </figcaption>
+        </figure>
+      ))}
+      <!-- {entries.map((entry, i) => (
         <figure class="reveal mb-6 break-inside-avoid border border-border" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
           <ImagePlaceholder label={`Piece ${entry.serial}`} class:list={[entry.aspect, 'w-full border-0']} />
           <figcaption class="border-t border-border bg-raised px-4 py-3">
             <AssayMark serial={entry.serial} placement={entry.placement} session={entry.session} />
           </figcaption>
         </figure>
-      ))}
+      ))} -->
     </div>
 
     <div class="reveal mt-14 border-t border-border pt-10 text-center">

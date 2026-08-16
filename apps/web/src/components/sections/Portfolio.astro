@@ -1,20 +1,22 @@
 ---
 import SectionHeading from '@components/SectionHeading.astro';
-import ImagePlaceholder from '@components/ImagePlaceholder.astro';
+// import ImagePlaceholder from '@components/imagePlaceholder.astro';
 import AssayMark from '@components/AssayMark.astro';
 import CtaButton from '@components/CtaButton.astro';
 import { BASE_URL } from '@config/site';
+import { PORTFOLIO_CATALOG, getMediaUrl } from '@domain/portfolio';
+import Image from '@components/Image.astro';
 
 // Register preview — 6 latest entries. The full register lives on /gallery.
 // Serials/placements are illustrative until real pieces are supplied.
-const entries = [
-  { serial: 'No. 042', placement: 'Forearm', session: '2026', aspect: 'aspect-[4/5]' },
-  { serial: 'No. 041', placement: 'Shoulder', session: '2026', aspect: 'aspect-square' },
-  { serial: 'No. 039', placement: 'Back', session: '2025', aspect: 'aspect-[4/5]' },
-  { serial: 'No. 037', placement: 'Calf', session: '2025', aspect: 'aspect-square' },
-  { serial: 'No. 035', placement: 'Sternum', session: '2025', aspect: 'aspect-[4/5]' },
-  { serial: 'No. 033', placement: 'Upper arm', session: '2025', aspect: 'aspect-square' },
-];
+// const entries = [
+//   { serial: 'No. 042', placement: 'Forearm', session: '2026', aspect: 'aspect-[4/5]' },
+//   { serial: 'No. 041', placement: 'Shoulder', session: '2026', aspect: 'aspect-square' },
+//   { serial: 'No. 039', placement: 'Back', session: '2025', aspect: 'aspect-[4/5]' },
+//   { serial: 'No. 037', placement: 'Calf', session: '2025', aspect: 'aspect-square' },
+//   { serial: 'No. 035', placement: 'Sternum', session: '2025', aspect: 'aspect-[4/5]' },
+//   { serial: 'No. 033', placement: 'Upper arm', session: '2025', aspect: 'aspect-square' },
+// ];
 ---
 
 <section id="portfolio" class="flex min-h-svh flex-col justify-center py-16 md:py-18">
@@ -28,14 +30,22 @@ const entries = [
     </div>
 
     <div class="mt-14 grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-3">
-      {entries.map((entry, i) => (
+      { PORTFOLIO_CATALOG.slice(0, 6).map((entry, i) => (
+        <figure class="reveal group relative bg-background aspect-4/5 overflow-hidden" style={`--reveal-delay: ${i * 60}ms`}>
+          <Image src={getMediaUrl(entry.fileName, entry.type)} alt={entry.title} class="h-full w-full object-cover"/>
+          <figcaption class="absolute inset-x-0 bottom-0 flex items-center bg-linear-to-t from-background via-background/80 to-transparent p-4 pt-8">
+            <AssayMark serial={entry.id} placement={entry.placement} category={entry.category}/>
+          </figcaption>
+        </figure>
+      ))}
+      <!-- {entries.map((entry, i) => (
         <figure class="reveal group relative bg-background" style={`--reveal-delay: ${i * 60}ms`}>
           <ImagePlaceholder label={`Piece ${entry.serial}`} class:list={[entry.aspect, 'w-full border-0']} />
           <figcaption class="absolute inset-x-0 bottom-0 flex items-center bg-linear-to-t from-background via-background/80 to-transparent p-4 pt-8">
             <AssayMark serial={entry.serial} placement={entry.placement} session={entry.session} />
           </figcaption>
         </figure>
-      ))}
+      ))} -->
     </div>
 
     <div class="reveal mt-14 text-center">

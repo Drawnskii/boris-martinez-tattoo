@@ -1,4 +1,6 @@
 ---
+import type { PortfolioCategory } from '@domain/portfolio';
+
 /* -----------------------------------------------------------------
    AssayMark — the certification stamp carried by every registered
    piece: mono serial, placement, session date. `sealed` wraps the
@@ -10,11 +12,12 @@ interface Props {
   session?: string;
   sealed?: boolean;
   class?: string;
+  category?: PortfolioCategory;
 }
 
-const { serial, placement, session, sealed = false, class: className = '' } = Astro.props;
+const { serial, placement, session, sealed = false, class: className = '', category: category = 'tattoo' } = Astro.props;
 
-const parts = [serial, placement, session].filter(Boolean);
+const parts = [serial, placement, session, category].filter(Boolean);
 const mark = parts.join(' · ');
 ---
 

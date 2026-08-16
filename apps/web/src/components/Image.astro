@@ -1,0 +1,25 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+  width?: number;
+  height?: number;
+}
+const { src, alt, class: className = 'w-full h-auto object-cover', width = 800, height = 1000 } = Astro.props;
+---
+
+<Image
+  src={src}
+  alt={alt}
+  width={width}
+  height={height}
+  format="webp"
+  quality="high"
+  class:list={[
+    'border border-border bg-raised object-cover',
+    className,
+  ]}
+/>

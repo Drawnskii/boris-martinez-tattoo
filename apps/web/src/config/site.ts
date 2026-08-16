@@ -1,4 +1,5 @@
 export const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, '');
+export const R2_URL = import.meta.env.PUBLIC_R2_URL.replace(/\/$/, '');
 
 export const SITE = {
   name: 'Boris Martinez',
