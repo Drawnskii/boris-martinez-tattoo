@@ -19,7 +19,17 @@ import { BASE_URL } from '@config/site';
     <div class="reveal mt-14 grid items-start gap-12 md:grid-cols-2">
       {/* artist portrait plate with its sealed hallmark */}
       <div class="relative">
-        <ImagePlaceholder label="Portrait of the artist" class="aspect-4/5 w-full" />
+        <!-- <ImagePlaceholder label="Portrait of the artist" class="aspect-4/5 w-full" /> -->
+        <video
+          autoplay
+          loop
+          muted
+          playsinline
+          class="aspect-4/5 w-full object-cover border border-border bg-background shadow-sm"
+          aria-label="Video portrait of the artist Boris Martinez"
+        >
+          <source src="https://pub-8b5b15bf54c048f7915f216233ff0d2f.r2.dev/portfolio/videos/IMG_1267.mp4" type="video/mp4" />
+        </video>
         <AssayMark serial="BM" sealed class="absolute -bottom-6 -right-4 bg-background md:-right-6" />
       </div>
 

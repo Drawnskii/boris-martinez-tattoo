@@ -15,7 +15,7 @@ interface Props {
   category?: PortfolioCategory;
 }
 
-const { serial, placement, session, sealed = false, class: className = '', category: category = 'tattoo' } = Astro.props;
+const { serial, placement, session, sealed = false, class: className = '', category: category = '' } = Astro.props;
 
 const parts = [serial, placement, session, category].filter(Boolean);
 const mark = parts.join(' · ');

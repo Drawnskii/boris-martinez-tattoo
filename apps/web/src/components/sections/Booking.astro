@@ -1,9 +1,13 @@
 ---
 import SectionHeading from '@components/SectionHeading.astro';
 
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
+
 const inputClass =
   'w-full border border-border bg-raised px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-tertiary-400 focus:outline-none';
 ---
+
+<script is:inline src="https://js.hcaptcha.com/1/api.js" async defer></script>
 
 <section id="booking" class="flex min-h-svh flex-col justify-center border-t border-border bg-raised/50 py-16 md:py-18">
   <div class="shell" style="--shell-max: 48rem">
@@ -16,7 +20,12 @@ const inputClass =
     </div>
 
     {/* the commission slip */}
-    <form id="booking-form" class="reveal mt-14 border border-border bg-background p-6 md:p-10">
+    <form id="booking-form" action="https://api.web3forms.com/submit" method="POST" class="reveal mt-14 border border-border bg-background p-6 md:p-10">
+      
+      <input type="hidden" name="access_key" value={accessKey}>
+      
+      <input type="checkbox" name="botcheck" class="hidden" style="display: none;" />
+      
       <div class="flex items-center justify-between border-b border-border pb-4">
         <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">
           Commission slip
@@ -25,7 +34,7 @@ const inputClass =
           Boris Martinez Tattoo
         </p>
       </div>
-
+      
       <div class="mt-8 grid gap-6 sm:grid-cols-2">
         <div>
           <label for="booking-name" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Name</label>
@@ -36,8 +45,8 @@ const inputClass =
           <input id="booking-email" name="email" type="email" required placeholder="you@example.com" class={inputClass} />
         </div>
         <div>
-          <label for="booking-phone" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Phone (optional)</label>
-          <input id="booking-phone" name="phone" type="tel" placeholder="+00 000 000 000" class={inputClass} />
+          <label for="booking-phone" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Phone</label>
+          <input id="booking-phone" name="phone" type="tel" required placeholder="+00 000 000 000" class={inputClass} />
         </div>
         <div>
           <label for="booking-size" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Approximate scale</label>
@@ -51,21 +60,32 @@ const inputClass =
         <div class="sm:col-span-2">
           <label for="booking-idea" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">The design</label>
           <textarea
-            id="booking-idea"
-            name="idea"
-            rows="4"
-            required
-            placeholder="Describe the design, placement, references..."
-            class={inputClass}
+          id="booking-idea"
+          name="idea"
+          rows="4"
+          required
+          placeholder="Describe the design, placement, references..."
+          class={inputClass}
           ></textarea>
         </div>
       </div>
 
-      <div class="mt-8 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
+      <div class="mt-8 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">  
+        <div 
+          id="captcha"
+          class="h-captcha" 
+          data-sitekey="50b2fe65-b00b-4b9e-ad62-3ba471098be2" 
+          data-theme="dark" 
+          data-callback="onCaptchaSuccess"
+          data-expired-callback="onCaptchaExpired"
+        ></div>
+        <p id="captcha-error" class="hidden mt-2 font-primary text-xs text-red-400">Please complete the captcha verification.</p>
+        
         <button
-          type="submit"
-          class="bg-paper px-8 py-3.5 font-secondary text-sm font-semibold uppercase tracking-[0.12em] text-paper-foreground transition-all hover:bg-tertiary-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
-        >
+            id="submit-btn"
+            type="submit"
+            class="hidden bg-paper px-8 py-3.5 font-secondary text-sm font-semibold uppercase tracking-[0.12em] text-paper-foreground transition-all hover:bg-tertiary-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)] disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+          >
           Stamp the request
         </button>
         <p id="booking-confirmation" class="hidden font-mono text-xs tracking-[0.06em] text-tertiary-300" role="status">
@@ -77,23 +97,145 @@ const inputClass =
 </section>
 
 <script>
-  // Placeholder submit handler — replace with a real POST to the booking
-  // endpoint once apps/api exists.
-  const form = document.getElementById('booking-form');
+  declare global {
+    interface Window {
+      onCaptchaSuccess: () => void;
+      onCaptchaExpired: () => void;
+      hcaptcha?: {
+        reset: () => void;
+      };
+    }
+  }
+
+  const form = document.getElementById('booking-form') as HTMLFormElement | null;
   const confirmation = document.getElementById('booking-confirmation');
+  const captchaError = document.getElementById('captcha-error');
+  const captcha = document.getElementById('captcha');
+  const submit = document.getElementById('submit-btn');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  form?.addEventListener('submit', (event) => {
-    event.preventDefault();
-    confirmation?.classList.remove('hidden');
-    if (!reduceMotion) {
-      confirmation?.animate(
+  window.onCaptchaSuccess = () => {
+    if (!captcha || !submit) return;
+    
+    captchaError?.classList.add('hidden');
+
+    if (reduceMotion) {
+      captcha.classList.add('hidden');
+      submit.classList.remove('hidden');
+    } else {
+      const hideAnim = captcha.animate(
         [
-          { opacity: 0, transform: 'translateY(0.5rem)' },
-          { opacity: 1, transform: 'translateY(0)' },
+          { opacity: 1, height: captcha.scrollHeight + 'px', margin: '1.5rem 0 0 0' },
+          { opacity: 0, height: '0px', margin: '0' }
         ],
-        { duration: 300, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' },
+        { duration: 400, easing: 'ease-in-out', fill: 'forwards' }
       );
+
+      hideAnim.onfinish = () => {
+        captcha.classList.add('hidden');
+        submit.classList.remove('hidden');
+        
+        submit.animate(
+          [
+            { opacity: 0, transform: 'translateY(10px)' },
+            { opacity: 1, transform: 'translateY(0)' }
+          ],
+          { duration: 400, easing: 'ease-out', fill: 'both' }
+        );
+      };
+    }
+  };
+
+  window.onCaptchaExpired = () => {
+    captcha?.getAnimations().forEach(anim => anim.cancel());
+    submit?.getAnimations().forEach(anim => anim.cancel());
+    
+    submit?.classList.add('hidden');
+    captcha?.classList.remove('hidden');
+  };
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const botcheck = form.querySelector('input[name="botcheck"]') as HTMLInputElement;
+    if (botcheck && botcheck.checked) {
+      form.reset();
+      return;
+    }
+    
+    confirmation?.classList.add('hidden');
+    captchaError?.classList.add('hidden');
+
+    const tempFormData = new FormData(form as HTMLFormElement);
+    const hCaptchaResponse = tempFormData.get('h-captcha-response');
+    if (!hCaptchaResponse) {
+      captchaError?.classList.remove('hidden');
+      return;
+    }
+
+    const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    const originalBtnText = submitBtn.innerText;
+    
+    if (submitBtn) {
+      submitBtn.innerText = "Stamping...";
+      submitBtn.disabled = true;
+    }
+    
+    try {
+      const finalFormData = new FormData(form as HTMLFormElement);
+      
+      const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
+
+      for (const [key, value] of finalFormData.entries()) {
+        if (typeof value === 'string') {
+          let sanitizedValue = value.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+          sanitizedValue = sanitizedValue.replace(urlRegex, "[ENLACE REMOVIDO]");
+
+          finalFormData.set(key, sanitizedValue);
+        }
+      }
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json' 
+        },
+        body: finalFormData
+      });
+
+      if (response.ok) {
+        form.reset();
+
+        captcha?.getAnimations().forEach(anim => anim.cancel());
+        submit?.getAnimations().forEach(anim => anim.cancel());
+
+        submit?.classList.add('hidden');
+        captcha?.classList.remove('hidden');
+
+        if (typeof window !== 'undefined' && window.hcaptcha) {
+          window.hcaptcha.reset();
+        }
+        
+        confirmation?.classList.remove('hidden');
+        if (!reduceMotion) {
+          confirmation?.animate(
+            [
+              { opacity: 0, transform: 'translateY(0.5rem)' },
+              { opacity: 1, transform: 'translateY(0)' },
+            ],
+            { duration: 300, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' },
+          );
+        }
+      } else {
+        alert("There was an issue stamping your request. Please try again.");
+      }
+    } catch {
+      alert("Connection error. Please check your network and try again.");
+    } finally {
+      if (submitBtn) {
+        submitBtn.innerText = originalBtnText;
+        submitBtn.disabled = false;
+      }
     }
   });
 </script>

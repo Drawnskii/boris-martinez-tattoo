@@ -1,6 +1,6 @@
 ---
 import SectionHeading from '@components/SectionHeading.astro';
-import ImagePlaceholder from '@components/ImagePlaceholder.astro';
+import LocationMap from '@components/LocationMap.astro';
 
 const hours = [
   { days: 'Monday — Friday', time: '10:00 — 19:00' },
@@ -21,7 +21,9 @@ const hours = [
 
     <div class="mt-14 grid gap-10 lg:grid-cols-5">
       {/* map plate */}
-      <ImagePlaceholder label="Map of the atelier" class="reveal aspect-4/3 w-full lg:col-span-3 lg:aspect-auto" />
+      <div class="reveal w-full lg:col-span-3">
+        <LocationMap />
+      </div>
 
       {/* the atelier plate: address, hours, contact as one ledger */}
       <div class="reveal border border-border lg:col-span-2" style="--reveal-delay: 80ms">
