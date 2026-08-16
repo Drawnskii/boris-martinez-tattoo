@@ -184,6 +184,8 @@ const inputClass =
     try {
       const finalFormData = new FormData(form as HTMLFormElement);
       
+      finalFormData.delete('g-recaptcha-response');
+
       const urlRegex = /(https?:\/\/[^\s]+)|(www\.[^\s]+)/gi;
 
       for (const [key, value] of finalFormData.entries()) {
