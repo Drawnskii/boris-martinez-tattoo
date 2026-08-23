@@ -26,6 +26,8 @@ import Image from '@components/Image.astro';
 //   session: i < 8 ? '2026' : '2025',
 //   aspect: aspects[i % aspects.length],
 // }));
+
+import 'glightbox/dist/css/glightbox.min.css';
 ---
 
 <BaseLayout title="The Register — Boris Martinez Tattoo" description="The full register — every piece struck by Boris Martinez Tattoo, each entered with its assay mark.">
@@ -46,22 +48,29 @@ import Image from '@components/Image.astro';
 
     {/* masonry: columns fill vertically, break-inside-avoid keeps entries whole */}
     <div class="mt-12 columns-2 gap-6 md:columns-3 xl:columns-4">
-      {PORTFOLIO_CATALOG.map((entry, i) => (
-        <figure class="reveal mb-6 break-inside-avoid border border-border" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
-          <Image src={getMediaUrl(entry.fileName, entry.type)} alt={entry.title} />
-          <figcaption class="border-t border-border bg-raised px-4 py-3">
-            <AssayMark serial={entry.id} placement={entry.placement} category={entry.category} />
-          </figcaption>
-        </figure>
-      ))}
-      <!-- {entries.map((entry, i) => (
-        <figure class="reveal mb-6 break-inside-avoid border border-border" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
-          <ImagePlaceholder label={`Piece ${entry.serial}`} class:list={[entry.aspect, 'w-full border-0']} />
-          <figcaption class="border-t border-border bg-raised px-4 py-3">
-            <AssayMark serial={entry.serial} placement={entry.placement} session={entry.session} />
-          </figcaption>
-        </figure>
-      ))} -->
+      {PORTFOLIO_CATALOG.map((entry, i) => {
+        const imageUrl = getMediaUrl(entry.fileName, entry.type);
+        return (
+          <figure class="reveal mb-6 break-inside-avoid w-full" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
+            <div class="overflow-hidden border border-border bg-raised transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl">
+              <a 
+                href={imageUrl}
+                class="glightbox block cursor-pointer overflow-hidden group"
+                data-gallery="register-gallery"
+              >
+                <Image 
+                  src={imageUrl} 
+                  alt={entry.title} 
+                  class="transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                />
+              </a>
+              <figcaption class="border-t border-border bg-raised px-4 py-3">
+                <AssayMark serial={entry.id} placement={entry.placement} category={entry.category} />
+              </figcaption>
+            </div>
+          </figure>
+        );
+      })}
     </div>
 
     <div class="reveal mt-14 border-t border-border pt-10 text-center">
@@ -71,3 +80,16 @@ import Image from '@components/Image.astro';
     </div>
   </main>
 </BaseLayout>
+
+<script>
+  import GLightbox from 'glightbox';
+
+  GLightbox({
+    selector: '.glightbox',
+    touchNavigation: true,
+    loop: true,
+    zoomable: true,
+    openEffect: 'fade',
+    closeEffect: 'fade',
+  });
+</script>
