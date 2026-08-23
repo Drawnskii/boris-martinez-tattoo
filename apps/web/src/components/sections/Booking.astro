@@ -1,5 +1,6 @@
 ---
 import SectionHeading from '@components/SectionHeading.astro';
+import PhoneInput from '@components/forms/PhoneInput.astro';
 
 const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY;
 
@@ -46,7 +47,7 @@ const inputClass =
         </div>
         <div>
           <label for="booking-phone" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Phone</label>
-          <input id="booking-phone" name="phone" type="tel" required placeholder="+00 000 000 000" class={inputClass} />
+          <PhoneInput class={inputClass} />
         </div>
         <div>
           <label for="booking-size" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Approximate scale</label>

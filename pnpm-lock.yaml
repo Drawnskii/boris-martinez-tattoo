@@ -62,6 +62,9 @@ importers:
       astro-icon:
         specifier: ^1.1.5
         version: 1.1.5
+      intl-tel-input:
+        specifier: ^29.2.3
+        version: 29.2.3
       leaflet:
         specifier: ^1.9.4
         version: 1.9.4
@@ -2341,6 +2344,9 @@ packages:
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
     engines: {node: '>=0.8.19'}
+
+  intl-tel-input@29.2.3:
+    resolution: {integrity: sha512-uwDslWntH/G5HuVlCSly8XdRC2iXVnpAEtj5I3JOFTy3G/7PARGsqbakWBBXfjzh3BjXXLOEOZDvqulvPSG0QQ==}
 
   iron-webcrypto@1.2.1:
     resolution: {integrity: sha512-feOM6FaSr6rEABp/eDfVseKyTMDt+KGpeB35SkVn9Tyn0CqvVsY3EwI0v5i8nMHyJnzCIQf7nsy3p41TPkJZhg==}
@@ -5275,6 +5281,8 @@ snapshots:
   ignore@7.0.6: {}
 
   imurmurhash@0.1.4: {}
+
+  intl-tel-input@29.2.3: {}
 
   iron-webcrypto@1.2.1: {}
 

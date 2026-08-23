@@ -1,0 +1,44 @@
+---
+import "intl-tel-input/styles";
+
+interface Props {
+    class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<input id="booking-phone" type="tel" name="phone" required data-custom-class={className} />
+
+<script>
+  import intlTelInput from "intl-tel-input";
+
+  const input = document.querySelector("#booking-phone") as HTMLInputElement | null;
+
+  if (input) {
+    const styleOptions = {
+        container: "w-full",
+        input: input.dataset.customClass || "",
+        countrySelector: "!bg-background !border !border-border !rounded-none shadow-2xl",
+        searchWrapper: "!p-2 !border-b !border-border !bg-background !rounded-none",
+        searchInput: "!text-foreground !rounded-none focus:outline-none text-xs",
+        countryList: "!bg-background !rounded-none [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-background [&::-webkit-scrollbar-thumb]:bg-border hover:[&::-webkit-scrollbar-thumb]:bg-muted-foreground",
+        countryListItem: "!bg-background hover:!bg-raised aria-selected:!bg-raised !text-foreground text-xs cursor-pointer",
+        countryName: "!text-foreground",
+        dialCode: "!text-muted-foreground",
+        selectedDialCode: "text-sm",
+        arrow: "!text-muted-foreground",
+    };
+
+    intlTelInput(input, {
+      loadUtils: () => import("intl-tel-input/utils"),
+      hiddenInputs: () => ({
+        phone: "phone",
+      }),
+      classNames: {
+        ...styleOptions,
+      },
+      initialCountry: "us",
+    });
+  }
+</script>
