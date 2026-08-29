@@ -1,0 +1,57 @@
+---
+/* -----------------------------------------------------------------
+   Footer — the register's colophon. Hairline top rule, brand line,
+   social hallmarks, and a colophon strip with the copyright and the
+   site developer credit.
+   ----------------------------------------------------------------- */
+import { SITE, SOCIAL_LINKS, DEVELOPER } from '@config/site';
+import NavBrand from '@components/NavBrand.astro';
+import { Icon } from 'astro-icon/components';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border bg-background">
+  <div class="shell flex flex-col gap-10 py-14">
+    <div class="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+      <div class="flex flex-col gap-4">
+        <NavBrand sealSize='2xl'/>
+        <p class="font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
+          Custom blackwork · Los Angeles · New York · New Jersey
+        </p>
+      </div>
+
+      <nav aria-label="Social media" class="flex items-center gap-4">
+        {SOCIAL_LINKS.map((social) => (
+          <a
+            href={social.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={social.label}
+            title={social.label}
+            class="flex items-center p-1 justify-center border border-border text-foreground transition-colors hover:border-tertiary-400 hover:text-tertiary-300"
+          >
+            <Icon name={social.icon} class="size-6" />
+          </a>
+        ))}
+      </nav>
+    </div>
+
+    <div class="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+      <p class="font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
+        © {year} {SITE.name} Tattoo. All rights reserved.
+      </p>
+      <p class="font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
+        Site by{' '}
+        <a
+          href={DEVELOPER.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-foreground transition-colors hover:text-tertiary-300"
+        >
+          {DEVELOPER.name}
+        </a>
+      </p>
+    </div>
+  </div>
+</footer>

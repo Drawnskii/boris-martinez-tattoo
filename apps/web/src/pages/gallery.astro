@@ -47,7 +47,7 @@ import 'glightbox/dist/css/glightbox.min.css';
     </div>
 
     {/* masonry: columns fill vertically, break-inside-avoid keeps entries whole */}
-    <div class="mt-12 columns-2 gap-6 md:columns-3 xl:columns-4">
+    <div class="mt-12 columns-1 gap-6 md:columns-2 xl:columns-3">
       {PORTFOLIO_CATALOG.map((entry, i) => {
         const imageUrl = getMediaUrl(entry.fileName, entry.type);
         return (

@@ -30,7 +30,7 @@ const sideClass =
 {isHeader && (
   <header class="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur">
     <div class="shell flex h-16 items-center justify-between">
-      <NavBrand />
+      <NavBrand sealSize="2xl" />
 
       <nav aria-label="Primary" class="hidden items-center text-center gap-7 md:flex">
         {NAV_LINKS.map((link) => (
@@ -87,7 +87,7 @@ const sideClass =
     {/* mobile fallback header */}
     <header class="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur lg:hidden">
       <div class="shell flex h-16 items-center justify-between">
-        <NavBrand />
+        <NavBrand sealSize='2xl' />
         <button
           id="nav-toggle"
           type="button"

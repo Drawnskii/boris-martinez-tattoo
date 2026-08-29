@@ -48,3 +48,20 @@ export const NAV_LINKS = [
   { href: '/#health', label: 'Health & Care', title: 'Health, hygiene and tattoo aftercare instructions' },
   { href: '/#location', label: 'Location', title: 'Atelier location, sitting hours and contact' },
 ] as const;
+
+/* -----------------------------------------------------------------
+   Social links — one entry per profile, icon name matches a file in
+   src/icons/. Add a new entry + an SVG file to scale this list.
+   ----------------------------------------------------------------- */
+export const SOCIAL_LINKS = [
+  { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/borismartinez__?igsi=aGY1aTdwanNrcTR1', icon: 'instagram' },
+  { id: 'threads', label: 'Threads', url: 'https://www.threads.com/@borismartinez__?igshid=NTc4MTIwNjQ2YQ%3D%3D', icon: 'threads' },
+] as const;
+
+/* -----------------------------------------------------------------
+   Site developer credit — shown in the footer's colophon line.
+   ----------------------------------------------------------------- */
+export const DEVELOPER = {
+  name: 'Fernando Beltrán',
+  url: 'https://www.linkedin.com/in/ferbeltrandev',
+} as const;

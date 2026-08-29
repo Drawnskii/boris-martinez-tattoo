@@ -10,6 +10,7 @@ import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
 import { SITE, NAV_LAYOUT, NAV_CONTENT_OFFSET, BASE_URL } from '@config/site';
 import Navbar from '@components/Navbar.astro';
+import Footer from '@components/Footer.astro';
 
 interface Props {
   title?: string;
@@ -64,6 +65,7 @@ const contentOffset = NAV_CONTENT_OFFSET[NAV_LAYOUT];
     <Navbar />
     <div class={contentOffset}>
       <slot />
+      <Footer />
     </div>
     {/* Reveal observer — adds .is-visible to .reveal elements as they
         walk into view. Progressive enhancement: pre-marks anything
