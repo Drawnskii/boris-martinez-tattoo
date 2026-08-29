@@ -1,5 +1,6 @@
 ---
 import 'leaflet/dist/leaflet.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 ---
 
 <div class="border border-border bg-background">
@@ -37,15 +38,41 @@ import 'leaflet/dist/leaflet.css';
 
 <script>
   import L from 'leaflet';
+  import '@maplibre/maplibre-gl-leaflet';
+  import { setWorkerUrl } from 'maplibre-gl';
+  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+
+  setWorkerUrl(maplibreWorkerUrl);
 
   const map = L.map('tattoo-map', {
     scrollWheelZoom: false,
   });
 
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors © CARTO'
+  const container = map.getContainer();
+  container.addEventListener(
+    'wheel',
+    (e) => {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -1 : 1;
+      const zoom = Math.max(
+        map.getMinZoom(),
+        Math.min(map.getMaxZoom(), map.getZoom() + delta),
+      );
+      if (zoom === map.getZoom()) return;
+      const point = L.DomEvent.getMousePosition(e, container);
+      map.setZoomAround(point, zoom);
+    },
+    { passive: false },
+  );
+
+  L.maplibreGL({
+    style: 'https://tiles.openfreemap.org/styles/dark',
   }).addTo(map);
+
+  map.attributionControl.addAttribution(
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  );
 
   const cssMarker = L.divIcon({
     className: 'custom-div-icon',
@@ -77,11 +104,11 @@ import 'leaflet/dist/leaflet.css';
     </div>
   `;
   
-  const m1 = L.marker([34.0440, -118.2327], { 
-    icon: cssMarker,
-    title: 'LA Forge — Arts District, Los Angeles, CA',
-    alt: 'LA Forge location marker'
-  }).bindPopup(createPopupHTML('LA Forge', 'Arts District, Los Angeles, CA', '12:00 - 20:00'));
+  // const m1 = L.marker([34.0440, -118.2327], { 
+  //   icon: cssMarker,
+  //   title: 'LA Forge — Arts District, Los Angeles, CA',
+  //   alt: 'LA Forge location marker'
+  // }).bindPopup(createPopupHTML('LA Forge', 'Arts District, Los Angeles, CA', '12:00 - 20:00'));
 
   const m2 = L.marker([40.7180, -73.9599], { 
     icon: cssMarker,
@@ -89,13 +116,13 @@ import 'leaflet/dist/leaflet.css';
     alt: 'NY Assay Office location marker'
   }).bindPopup(createPopupHTML('NY Assay Office', 'Williamsburg, Brooklyn, NY', '10:00 - 19:00'));
 
-  const m3 = L.marker([40.7282, -74.0776], { 
-    icon: cssMarker,
-    title: 'NJ Outpost — Jersey City, NJ',
-    alt: 'NJ Outpost location marker'
-  }).bindPopup(createPopupHTML('NJ Outpost', 'Jersey City, NJ', '11:00 - 18:00'));
+  // const m3 = L.marker([40.7282, -74.0776], { 
+  //   icon: cssMarker,
+  //   title: 'NJ Outpost — Jersey City, NJ',
+  //   alt: 'NJ Outpost location marker'
+  // }).bindPopup(createPopupHTML('NJ Outpost', 'Jersey City, NJ', '11:00 - 18:00'));
 
-  const group = L.featureGroup([m1, m2, m3]).addTo(map);
+  const group = L.featureGroup([m2]).addTo(map);
 
   map.fitBounds(group.getBounds(), {
     padding: [10, 10],

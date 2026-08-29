@@ -13,6 +13,9 @@ export default defineConfig({
   base: process.env.PUBLIC_ASTRO_BASE || '/',
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      exclude: ['maplibre-gl'],
+    },
   },
   integrations: [
     icon(),
