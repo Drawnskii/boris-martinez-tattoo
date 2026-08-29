@@ -21,10 +21,11 @@ import { BASE_URL } from '@config/site';
       <div class="relative">
         <!-- <ImagePlaceholder label="Portrait of the artist" class="aspect-4/5 w-full" /> -->
         <video
-          autoplay
+          id="about-video"
           loop
           muted
           playsinline
+          preload="none"
           class="aspect-4/5 w-full object-cover border border-border bg-background shadow-sm"
           aria-label="Video portrait of the artist Boris Martinez"
         >
@@ -62,3 +63,21 @@ import { BASE_URL } from '@config/site';
     </div>
   </div>
 </section>
+
+<script>
+  const video = document.getElementById('about-video') as HTMLVideoElement | null;
+
+  if (video) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          void video.play();
+        } else {
+          video.pause();
+        }
+      },
+      { rootMargin: '200px 0px 0px 0px' },
+    );
+    observer.observe(video);
+  }
+</script>

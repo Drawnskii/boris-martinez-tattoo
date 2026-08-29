@@ -37,96 +37,115 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 </style>
 
 <script>
-  import L from 'leaflet';
-  import '@maplibre/maplibre-gl-leaflet';
-  import { setWorkerUrl } from 'maplibre-gl';
-  import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+  let initialized = false;
 
-  setWorkerUrl(maplibreWorkerUrl);
+  /* leaflet + maplibre (~250KB) only load when the map scrolls near
+     the viewport — not on first paint. The map sits below the fold,
+     so this keeps the heavy bundle off the critical path. */
+  const initMap = async () => {
+    if (initialized) return;
+    initialized = true;
 
-  const map = L.map('tattoo-map', {
-    scrollWheelZoom: false,
-  });
+    const [leaflet, , mlgl, workerUrlMod] = await Promise.all([
+      import('leaflet'),
+      import('@maplibre/maplibre-gl-leaflet'),
+      import('maplibre-gl'),
+      import('maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'),
+    ]);
 
-  const container = map.getContainer();
-  container.addEventListener(
-    'wheel',
-    (e) => {
-      if (!e.ctrlKey) return;
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -1 : 1;
-      const zoom = Math.max(
-        map.getMinZoom(),
-        Math.min(map.getMaxZoom(), map.getZoom() + delta),
-      );
-      if (zoom === map.getZoom()) return;
-      const point = L.DomEvent.getMousePosition(e, container);
-      map.setZoomAround(point, zoom);
-    },
-    { passive: false },
-  );
+    const L = leaflet.default;
+    const { setWorkerUrl } = mlgl;
+    setWorkerUrl(workerUrlMod.default);
 
-  L.maplibreGL({
-    style: 'https://tiles.openfreemap.org/styles/dark',
-  }).addTo(map);
+    const map = L.map('tattoo-map', {
+      scrollWheelZoom: false,
+    });
 
-  map.attributionControl.addAttribution(
-    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  );
+    const container = map.getContainer();
+    container.addEventListener(
+      'wheel',
+      (e) => {
+        if (!e.ctrlKey) return;
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -1 : 1;
+        const zoom = Math.max(
+          map.getMinZoom(),
+          Math.min(map.getMaxZoom(), map.getZoom() + delta),
+        );
+        if (zoom === map.getZoom()) return;
+        const point = L.DomEvent.getMousePosition(e, container);
+        map.setZoomAround(point, zoom);
+      },
+      { passive: false },
+    );
 
-  const cssMarker = L.divIcon({
-    className: 'custom-div-icon',
-    html: `<div class="assay-marker-dot"></div>`,
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-    popupAnchor: [0, -10]
-  });
+    L.maplibreGL({
+      style: 'https://tiles.openfreemap.org/styles/dark',
+    }).addTo(map);
 
-  const createPopupHTML = (title: string, address: string, hours: string) => `
-    <div class="flex flex-col gap-2 p-1 text-center">
-      <h3 class="font-secondary text-lg uppercase tracking-[0.12em] text-foreground m-0">
-        ${title}
-      </h3>
-      <p class="font-primary text-sm text-muted-foreground m-0">
-        ${address}
-      </p>
-      <div class="mt-2 border-t border-border pt-2">
-        <p class="font-mono text-2xs uppercase tracking-widest text-tertiary-600 m-0">
-          Operation Hours
+    map.attributionControl.addAttribution(
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    );
+
+    const cssMarker = L.divIcon({
+      className: 'custom-div-icon',
+      html: `<div class="assay-marker-dot"></div>`,
+      iconSize: [14, 14],
+      iconAnchor: [7, 7],
+      popupAnchor: [0, -10]
+    });
+
+    const createPopupHTML = (title: string, address: string, hours: string) => `
+      <div class="flex flex-col gap-2 p-1 text-center">
+        <h3 class="font-secondary text-lg uppercase tracking-[0.12em] text-foreground m-0">
+          ${title}
+        </h3>
+        <p class="font-primary text-sm text-muted-foreground m-0">
+          ${address}
         </p>
-        <p class="font-mono text-xs text-secondary-200 m-0">
-          ${hours}
-        </p>
+        <div class="mt-2 border-t border-border pt-2">
+          <p class="font-mono text-2xs uppercase tracking-widest text-tertiary-600 m-0">
+            Operation Hours
+          </p>
+          <p class="font-mono text-xs text-secondary-200 m-0">
+            ${hours}
+          </p>
+        </div>
+        <a href="#booking" class="px-4 py-2 bg-paper font-secondary font-semibold text-paper-foreground! hover:bg-tertiary-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
+          Book Session
+        </a>
       </div>
-      <a href="#booking" class="px-4 py-2 bg-paper font-secondary font-semibold text-paper-foreground! hover:bg-tertiary-300 hover:shadow-[0_2px_8px_rgba(0,0,0,0.4)]">
-        Book Session
-      </a>
-    </div>
-  `;
-  
-  // const m1 = L.marker([34.0440, -118.2327], { 
-  //   icon: cssMarker,
-  //   title: 'LA Forge — Arts District, Los Angeles, CA',
-  //   alt: 'LA Forge location marker'
-  // }).bindPopup(createPopupHTML('LA Forge', 'Arts District, Los Angeles, CA', '12:00 - 20:00'));
+    `;
 
-  const m2 = L.marker([40.7180, -73.9599], { 
-    icon: cssMarker,
-    title: 'NY Assay Office — Williamsburg, Brooklyn, NY',
-    alt: 'NY Assay Office location marker'
-  }).bindPopup(createPopupHTML('NY Assay Office', 'Williamsburg, Brooklyn, NY', '10:00 - 19:00'));
+    const m2 = L.marker([40.7238, -73.9935], { 
+      icon: cssMarker,
+      title: 'Blindreason Tattoo — Nolita, New York, NY',
+      alt: 'Blindreason Tattoo location marker'
+    }).bindPopup(createPopupHTML('Blindreason Tattoo', '258 Elizabeth St, Nolita, NY', '12:00 - 20:00'));
 
-  // const m3 = L.marker([40.7282, -74.0776], { 
-  //   icon: cssMarker,
-  //   title: 'NJ Outpost — Jersey City, NJ',
-  //   alt: 'NJ Outpost location marker'
-  // }).bindPopup(createPopupHTML('NJ Outpost', 'Jersey City, NJ', '11:00 - 18:00'));
+    const group = L.featureGroup([m2]).addTo(map);
 
-  const group = L.featureGroup([m2]).addTo(map);
+    map.fitBounds(group.getBounds(), {
+      padding: [10, 10],
+      maxZoom: 15
+    });
+  };
 
-  map.fitBounds(group.getBounds(), {
-    padding: [10, 10],
-    maxZoom: 15
-  });
-
+  const mount = document.getElementById('tattoo-map');
+  if (mount) {
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0]?.isIntersecting) {
+            void initMap();
+            observer.disconnect();
+          }
+        },
+        { rootMargin: '200px 0px 0px 0px' },
+      );
+      observer.observe(mount);
+    } else {
+      void initMap();
+    }
+  }
 </script>
