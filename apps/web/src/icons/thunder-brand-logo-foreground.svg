@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 672 1200" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,-269.136757,0)">
+        <g id="Thunder" transform="matrix(1.680666,0,0,1.680666,-394.336689,-599.534507)">
+            <path d="M419.146,600L394.768,566.817L524.415,356.724L770.199,356.724L794.576,389.907L704.47,487.199L770.199,487.199L794.576,520.381L682.086,650.68L770.199,650.68L794.576,683.862L419.146,1070.727L394.768,1037.544L514.809,780.765L419.146,781.11L394.768,747.927L497.378,600L419.146,600Z" style="fill:rgb(125,128,133);"/>
+        </g>
+        <g id="Thunder-Unified" transform="matrix(2.960712,0,0,2.24644,-1395.792131,-415.255829)">
+            <path d="M633.654,342.031L562.341,342.031L635.936,184.851L775.456,184.851L706.862,282.464L775.456,282.464L695.339,404.772L775.456,404.772L562.341,694.204L639.327,477.161L562.341,477.528L633.654,342.031Z" style="fill:rgb(214,216,219);"/>
+        </g>
+    </g>
+</svg>
