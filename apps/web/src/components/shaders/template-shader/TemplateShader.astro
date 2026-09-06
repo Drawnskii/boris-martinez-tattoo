@@ -149,9 +149,9 @@
 
   let sceneInstance: MercuryScene | null = null;
 
-  /* Defer everything: three.js + GLSL load in an idle chunk AFTER the
-     hero text has painted. FCP/LCP measure the DOM text — the drop
-     fades in a few hundred ms later, off the critical path. */
+  /* Defer everything: three.js + GLSL load in a post-load idle chunk
+     AFTER the hero text has painted. FCP/LCP measure the DOM text —
+     the drop fades in a few hundred ms later, off the critical path. */
   const init = async () => {
     const container = document.getElementById('canvas-container');
     if (!container) return;
@@ -174,10 +174,17 @@
   };
 
   const schedule = () => {
-    if ('requestIdleCallback' in window) {
-      window.requestIdleCallback(() => void init(), { timeout: 2000 });
+    const start = () => {
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(() => void init(), { timeout: 3000 });
+      } else {
+        setTimeout(() => void init(), 300);
+      }
+    };
+    if (document.readyState === 'complete') {
+      start();
     } else {
-      setTimeout(() => void init(), 200);
+      window.addEventListener('load', start, { once: true });
     }
   };
 

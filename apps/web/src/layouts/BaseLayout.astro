@@ -8,7 +8,7 @@ import '@fontsource/archivo/500.css';
 import '@fontsource/archivo/600.css';
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
-import { SITE, NAV_LAYOUT, NAV_CONTENT_OFFSET, BASE_URL } from '@config/site';
+import { SITE, NAV_LAYOUT, NAV_CONTENT_OFFSET, BASE_URL, R2_URL } from '@config/site';
 import Navbar from '@components/Navbar.astro';
 import Footer from '@components/Footer.astro';
 
@@ -21,14 +21,20 @@ const { title = SITE.title, description = SITE.description } = Astro.props;
 
 // Sidebar nav is fixed and w-56 — offset page content on lg+ screens.
 const contentOffset = NAV_CONTENT_OFFSET[NAV_LAYOUT];
+
+const r2Origin = R2_URL ? new URL(R2_URL).origin : '';
 ---
 
 <!doctype html>
-<html lang="en" class="motion-safe:scroll-smooth">
+<html lang="en" class="sm:motion-safe:scroll-smooth">
   <head>
     <meta charset="utf-8" />
     
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {r2Origin && <link rel="preconnect" href={r2Origin} crossorigin />}
+    <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
+    <link rel="preconnect" href="https://js.hcaptcha.com" crossorigin />
+    <link rel="preconnect" href="https://newassets.hcaptcha.com" crossorigin />
     <title>{title}</title>
     
     <link rel="icon" type="image/png" href=`${BASE_URL}/favicon-96x96.png` sizes="96x96" />

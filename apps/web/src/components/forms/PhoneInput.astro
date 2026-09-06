@@ -1,6 +1,4 @@
 ---
-import "intl-tel-input/styles";
-
 interface Props {
     class?: string;
 }
@@ -11,6 +9,15 @@ const { class: className = '' } = Astro.props;
 <input id="booking-phone" type="tel" name="phone" required data-custom-class={className} />
 
 <script>
+  import itiStylesUrl from "intl-tel-input/styles?url";
+
+  const linkStylesheet = (url: string) => {
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = url;
+    document.head.appendChild(link);
+  };
+
   const input = document.querySelector("#booking-phone") as HTMLInputElement | null;
 
   if (input) {
@@ -29,6 +36,7 @@ const { class: className = '' } = Astro.props;
     };
 
     const init = async () => {
+      linkStylesheet(itiStylesUrl);
       const { default: intlTelInput } = await import("intl-tel-input");
       intlTelInput(input, {
         loadUtils: () => import("intl-tel-input/utils"),

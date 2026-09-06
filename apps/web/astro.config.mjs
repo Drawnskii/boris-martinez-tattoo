@@ -16,6 +16,9 @@ export default defineConfig({
     optimizeDeps: {
       exclude: ['maplibre-gl'],
     },
+    build: {
+      sourcemap: true,
+    },
   },
   integrations: [
     icon(),
