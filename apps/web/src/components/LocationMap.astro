@@ -131,7 +131,10 @@
       icon: cssMarker,
       title: 'Blindreason Tattoo — Nolita, New York, NY',
       alt: 'Blindreason Tattoo location marker'
-    }).bindPopup(createPopupHTML('Blindreason Tattoo', '258 Elizabeth St, Nolita, NY', '12:00 - 20:00'));
+    }).bindPopup(
+      createPopupHTML('Blindreason Tattoo', '258 Elizabeth St, Nolita, NY', '12:00 - 20:00'),
+      { closeButton: false },
+    );
 
     const group = L.featureGroup([m2]).addTo(map);
 
@@ -139,6 +142,30 @@
       padding: [10, 10],
       maxZoom: 15
     });
+
+    if (group.getLayers().length === 1) {
+      m2.openPopup();
+      map.once('popupopen', () => {
+        const popupEl = m2.getPopup()?.getElement();
+        if (!popupEl) return;
+        const popupRect = popupEl.getBoundingClientRect();
+        const containerRect = map.getContainer().getBoundingClientRect();
+        const popupBounds = L.latLngBounds([
+          map.containerPointToLatLng([
+            popupRect.left - containerRect.left,
+            popupRect.top - containerRect.top,
+          ]),
+          map.containerPointToLatLng([
+            popupRect.right - containerRect.left,
+            popupRect.bottom - containerRect.top,
+          ]),
+        ]);
+        map.fitBounds(group.getBounds().extend(popupBounds), {
+          padding: [20, 20],
+          maxZoom: 15
+        });
+      });
+    }
   };
 
   const mount = document.getElementById('tattoo-map');
