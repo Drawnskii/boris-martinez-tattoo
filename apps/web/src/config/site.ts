@@ -2,9 +2,9 @@ export const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, '');
 export const R2_URL = import.meta.env.PUBLIC_R2_URL.replace(/\/$/, '');
 
 export const SITE = {
-  name: 'Boris Martinez',
-  title: 'Boris Martinez — Blackwork Tattoos in LA, NY & NJ',
-  description: 'Boris Martinez official portfolio. Custom blackwork tattoo artist serving Los Angeles, New York, and New Jersey.',
+  name: 'Boris Martínez',
+  title: 'Boris Martínez — Blackwork Tattoos in LA, NY & NJ',
+  description: 'Boris Martínez official portfolio. Custom blackwork tattoo artist serving Los Angeles, New York, and New Jersey.',
 } as const;
 
 export type Site = typeof SITE;
@@ -43,7 +43,7 @@ export const NAV_CONTENT_OFFSET: Record<NavLayout, string> = {
    ----------------------------------------------------------------- */
 export const NAV_LINKS = [
   { href: '/#portfolio', label: 'Portfolio', title: 'Tattoo portfolio — the register of struck pieces' },
-  { href: '/#about', label: 'About', title: 'About the artist and the house — Boris Martinez Tattoo' },
+  { href: '/#about', label: 'About', title: 'About the artist and the house — Boris Martínez Tattoo' },
   { href: '/#pricing', label: 'Pricing', title: 'Commission classes and pricing at the house' },
   { href: '/#health', label: 'Health & Care', title: 'Health, hygiene and tattoo aftercare instructions' },
   { href: '/#location', label: 'Location', title: 'Atelier location, sitting hours and contact' },
@@ -54,8 +54,8 @@ export const NAV_LINKS = [
    src/icons/. Add a new entry + an SVG file to scale this list.
    ----------------------------------------------------------------- */
 export const SOCIAL_LINKS = [
-  { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/borismartinez__?igsi=aGY1aTdwanNrcTR1', icon: 'instagram' },
-  { id: 'threads', label: 'Threads', url: 'https://www.threads.com/@borismartinez__?igshid=NTc4MTIwNjQ2YQ%3D%3D', icon: 'threads' },
+  { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/borisMartínez__?igsi=aGY1aTdwanNrcTR1', icon: 'instagram' },
+  { id: 'threads', label: 'Threads', url: 'https://www.threads.com/@borisMartínez__?igshid=NTc4MTIwNjQ2YQ%3D%3D', icon: 'threads' },
 ] as const;
 
 /* -----------------------------------------------------------------
