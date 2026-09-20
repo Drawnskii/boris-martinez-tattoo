@@ -44,7 +44,7 @@ export const NAV_CONTENT_OFFSET: Record<NavLayout, string> = {
 export const NAV_LINKS = [
   { href: '/#portfolio', label: 'Portfolio', title: 'Tattoo portfolio — the register of struck pieces' },
   { href: '/#about', label: 'About', title: 'About the artist and the house — Boris Martínez Tattoo' },
-  { href: '/#pricing', label: 'Pricing', title: 'Commission classes and pricing at the house' },
+  // { href: '/#pricing', label: 'Pricing', title: 'Commission classes and pricing at the house' },
   { href: '/#health', label: 'Health & Care', title: 'Health, hygiene and tattoo aftercare instructions' },
   { href: '/#location', label: 'Location', title: 'Atelier location, sitting hours and contact' },
 ] as const;

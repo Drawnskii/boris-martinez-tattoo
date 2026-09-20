@@ -32,7 +32,7 @@ import Image from '@components/Image.astro';
     <div class="mt-14 grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-3">
       { PORTFOLIO_CATALOG.slice(0, 6).map((entry, i) => (
         <figure class="reveal group relative bg-background aspect-4/5 overflow-hidden" style={`--reveal-delay: ${i * 60}ms`}>
-          <Image src={getMediaUrl(entry.fileName, entry.type)} alt={entry.title} class="h-full w-full object-cover"/>
+          <Image src={getMediaUrl(entry.fileName, entry.type)} alt={entry.title} class="h-full w-full object-cover" fetchpriority="low"/>
           <figcaption class="absolute inset-x-0 bottom-0 flex items-center bg-linear-to-t from-background via-background/80 to-transparent p-4 pt-8">
             <AssayMark serial={entry.id} placement={entry.placement} category={entry.category}/>
           </figcaption>

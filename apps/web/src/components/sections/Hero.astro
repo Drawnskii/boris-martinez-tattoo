@@ -39,7 +39,7 @@ import { BASE_URL } from "@config/site"
       </h1>
 
       <div class="mt-5 flex flex-col gap-8 lg:mt-6">
-        <p class="hero-strike-2 max-w-md text-base text-muted-foreground">
+        <p class="hero-strike-2 max-w-md text-base text-muted-foreground uppercase">
           Holding every piece to the highest standard, bringing singular designs onto living canvas.
         </p>
 
@@ -98,24 +98,22 @@ import { BASE_URL } from "@config/site"
 
   @media (prefers-reduced-motion: no-preference) {
     .hero-stamp {
-      animation: hero-stamp-down 750ms cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 60ms;
-      will-change: opacity, clip-path;
+      animation: hero-stamp-down 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
     }
     .hero-strike-1 {
-      animation: hero-strike-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation: hero-strike-in 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
     }
     .hero-strike-2 {
-      animation: hero-strike-in 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 700ms;
+      animation: hero-strike-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 240ms;
     }
     .hero-strike-3 {
-      animation: hero-strike-in 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 840ms;
+      animation: hero-strike-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 340ms;
     }
     .hero-strike-4 {
-      animation: hero-strike-in 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
-      animation-delay: 980ms;
+      animation: hero-strike-in 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 440ms;
     }
   }
 </style>

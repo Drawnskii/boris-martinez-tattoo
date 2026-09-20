@@ -24,18 +24,19 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Hero from '@components/sections/Hero.astro';
 import About from '@components/sections/About.astro';
 import Portfolio from '@components/sections/Portfolio.astro';
-import Pricing from '@components/sections/Pricing.astro';
+// import Pricing from '@components/sections/Pricing.astro';
 import Health from '@components/sections/Health.astro';
 import Location from '@components/sections/Location.astro';
 import Booking from '@components/sections/Booking.astro';
+import cinzel700 from '@fontsource/cinzel/files/cinzel-latin-700-normal.woff2?url';
 ---
 
-<BaseLayout>
+<BaseLayout heroFont={cinzel700}>
   <main>
     <Hero />
     <Portfolio />
     <About />
-    <Pricing />
+    <!-- <Pricing /> -->
     <Health />
     <Location />
     <Booking />

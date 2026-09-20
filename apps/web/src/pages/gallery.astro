@@ -7,7 +7,7 @@ import { BASE_URL } from '@config/site';
 import { PORTFOLIO_CATALOG, getMediaUrl } from '@domain/portfolio';
 import Image from '@components/Image.astro';
 
-/* The full register: masonry of registered pieces. Serials, placements
+/* The full register: grid of registered pieces. Serials, placements
    and sessions are illustrative until real pieces are supplied. */
 // const aspects = [
 //   'aspect-[3/4]',
@@ -26,16 +26,14 @@ import Image from '@components/Image.astro';
 //   session: i < 8 ? '2026' : '2025',
 //   aspect: aspects[i % aspects.length],
 // }));
-
-import 'glightbox/dist/css/glightbox.min.css';
 ---
 
-<BaseLayout title="The Register — Boris Martínez Tattoo" description="The full register — every piece struck by Boris Martínez Tattoo, each entered with its assay mark.">
+<BaseLayout title="The Portfolio — Boris Martínez Tattoo" description="The full portfolio — every piece struck by Boris Martínez Tattoo, each entered with its assay mark.">
   <main class="shell py-16 md:py-18">
     <div class="reveal flex flex-wrap items-end justify-between gap-6 border-b border-border pb-8">
       <div>
-        <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">Entry — The Register</p>
-        <h1 class="mt-3 font-secondary text-4xl tracking-[0.02em] text-foreground md:text-5xl">The register</h1>
+        <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">Entry — The Work</p>
+        <h1 class="mt-3 font-secondary text-4xl tracking-[0.02em] text-foreground md:text-5xl">The Portfolio</h1>
         <p class="mt-4 max-w-xl text-muted-foreground">
           Every piece struck, newest first — each entered with its assay mark:
           serial, placement, and session.
@@ -46,25 +44,27 @@ import 'glightbox/dist/css/glightbox.min.css';
       </CtaButton>
     </div>
 
-    {/* masonry: columns fill vertically, break-inside-avoid keeps entries whole */}
-    <div class="mt-12 columns-1 gap-6 md:columns-2 xl:columns-3">
+    {/* grid: row-major order matches PORTFOLIO_CATALOG sequence */}
+    <div class="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
       {PORTFOLIO_CATALOG.map((entry, i) => {
         const imageUrl = getMediaUrl(entry.fileName, entry.type);
         return (
-          <figure class="reveal mb-6 break-inside-avoid w-full" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
-            <div class="overflow-hidden border border-border bg-raised transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl">
+          <figure class="reveal flex w-full" style={`--reveal-delay: ${(i % 4) * 60}ms`}>
+            <div class="flex w-full flex-col overflow-hidden border border-border bg-raised transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-2xl">
               <a 
                 href={imageUrl}
-                class="glightbox block cursor-pointer overflow-hidden group"
+                class="glightbox block aspect-4/5 cursor-pointer overflow-hidden group"
                 data-gallery="register-gallery"
               >
                 <Image 
                   src={imageUrl} 
                   alt={entry.title} 
-                  class="transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  class="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 0 ? 'high' : 'auto'}
                 />
               </a>
-              <figcaption class="border-t border-border bg-raised px-4 py-3">
+              <figcaption class="mt-auto border-t border-border bg-raised px-4 py-3">
                 <AssayMark serial={entry.id} placement={entry.placement} category={entry.category} />
               </figcaption>
             </div>
@@ -83,6 +83,10 @@ import 'glightbox/dist/css/glightbox.min.css';
 
 <script>
   import GLightbox from 'glightbox';
+
+  /* The lightbox skin is only needed once a piece is opened — load it
+     as its own chunk so it stays off the render-blocking CSS path. */
+  void import('glightbox/dist/css/glightbox.min.css');
 
   GLightbox({
     selector: '.glightbox',

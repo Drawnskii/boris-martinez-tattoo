@@ -27,10 +27,32 @@
     border: 2px solid var(--color-secondary-100);
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(0,0,0,0.8);
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
   .assay-marker-dot:hover {
     transform: scale(1.2);
+  }
+  /* the ledger cue: pointing at an address/contact row rings the marker */
+  @keyframes assay-marker-ping {
+    0% { transform: scale(1); }
+    45% { transform: scale(1.7); }
+    100% { transform: scale(1.45); }
+  }
+  .assay-marker-dot.is-pulsing {
+    transform: scale(1.45);
+    box-shadow:
+      0 0 0 6px color-mix(in oklab, var(--color-tertiary-400) 20%, transparent),
+      0 0 10px rgba(0,0,0,0.8);
+    animation: assay-marker-ping 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .assay-marker-dot {
+      transition: none;
+    }
+    .assay-marker-dot.is-pulsing {
+      transform: none;
+      animation: none;
+    }
   }
 </style>
 
@@ -165,6 +187,12 @@
           maxZoom: 15
         });
       });
+
+      /* Hand the live map to the section so the atelier ledger can draw
+         its sightline to the marker and follow every pan and zoom. */
+      window.dispatchEvent(
+        new CustomEvent('assay-map:ready', { detail: { map, marker: m2 } }),
+      );
     }
   };
 

@@ -1,0 +1,553 @@
+---
+interface Props {
+  inputClass?: string;
+  class?: string;
+}
+
+const { inputClass = '', class: className = '' } = Astro.props;
+---
+
+<div class:list={['relative', className]} data-birthdate>
+  <div class="flex">
+    <input
+      id="booking-birthdate"
+      name="birthdate"
+      type="text"
+      inputmode="numeric"
+      autocomplete="bday"
+      placeholder="MM / DD / YYYY"
+      required
+      class:list={[inputClass, 'min-w-0 flex-1 font-mono tracking-[0.08em]']}
+      data-birthdate-input
+      aria-describedby="birthdate-note"
+    />
+    <button
+      type="button"
+      data-birthdate-trigger
+      class="flex w-11 shrink-0 cursor-pointer items-center justify-center border-y border-r border-border bg-raised text-muted-foreground"
+      aria-haspopup="dialog"
+      aria-expanded="false"
+      aria-controls="birthdate-calendar"
+      aria-label="Open the register calendar"
+    >
+      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="16"></rect>
+        <path d="M3 10h18M8 3v4M16 3v4"></path>
+      </svg>
+    </button>
+  </div>
+
+  <p
+    id="birthdate-note"
+    role="status"
+    data-birthdate-note
+    data-state="hint"
+    class="mt-1.5 font-mono text-2xs uppercase tracking-[0.12em]"
+  >
+    Bookings are 18+ only
+  </p>
+
+  <div
+    id="birthdate-calendar"
+    data-birthdate-panel
+    hidden
+    class="absolute left-0 right-0 top-full z-30 mt-1 border border-border bg-background shadow-2xl"
+  >
+    <div class="flex items-center justify-between gap-1 border-b border-border p-2">
+      <button
+        type="button"
+        data-cal-prev
+        aria-label="Previous month"
+        class="flex size-7 shrink-0 cursor-pointer items-center justify-center border border-border bg-background text-muted-foreground transition-colors hover:border-tertiary-400 hover:text-tertiary-300 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-border disabled:hover:text-muted-foreground"
+      >
+        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M15 5l-7 7 7 7"></path>
+        </svg>
+      </button>
+
+      <div class="flex min-w-0 items-center gap-1">
+        <span class="relative">
+          <select
+            data-cal-month
+            aria-label="Month"
+            class="scheme-dark cursor-pointer appearance-none border border-border bg-background py-1 pl-1.5 pr-5 font-mono text-2xs uppercase tracking-[0.12em] text-muted-foreground focus:border-tertiary-400 focus:outline-none"
+          ></select>
+          <svg class="pointer-events-none absolute right-1.5 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M6 9l6 6 6-6"></path>
+          </svg>
+        </span>
+        <span class="relative">
+          <select
+            data-cal-year
+            aria-label="Year"
+            class="scheme-dark cursor-pointer appearance-none border border-border bg-background py-1 pl-1.5 pr-5 font-mono text-2xs uppercase tracking-[0.12em] text-muted-foreground focus:border-tertiary-400 focus:outline-none"
+          ></select>
+          <svg class="pointer-events-none absolute right-1.5 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M6 9l6 6 6-6"></path>
+          </svg>
+        </span>
+      </div>
+
+      <button
+        type="button"
+        data-cal-next
+        aria-label="Next month"
+        class="flex size-7 shrink-0 cursor-pointer items-center justify-center border border-border bg-background text-muted-foreground transition-colors hover:border-tertiary-400 hover:text-tertiary-300 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-border disabled:hover:text-muted-foreground"
+      >
+        <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div data-cal-grid role="grid" aria-label="Date of birth" class="grid"></div>
+
+    <p class="border-t border-border px-3 py-2 font-mono text-2xs uppercase tracking-[0.12em] text-muted-foreground">
+      Days struck out cannot book
+    </p>
+  </div>
+</div>
+
+<style>
+  [data-birthdate-note][data-state='hint'] {
+    color: var(--color-muted-foreground);
+  }
+  [data-birthdate-note][data-state='ok'] {
+    color: var(--color-tertiary-300);
+  }
+  [data-birthdate-note][data-state='error'] {
+    color: var(--color-foreground);
+  }
+</style>
+
+<script>
+  const MONTH_LABELS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const WEEKDAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+  interface BirthdateDetail {
+    value: string;
+    ok: boolean;
+    reason: string | null;
+    age: number | null;
+    touched: boolean;
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-birthdate]').forEach((root) => {
+    if (root.dataset.birthdateReady === 'true') return;
+    root.dataset.birthdateReady = 'true';
+
+    const input = root.querySelector<HTMLInputElement>('[data-birthdate-input]');
+    const trigger = root.querySelector<HTMLButtonElement>('[data-birthdate-trigger]');
+    const note = root.querySelector<HTMLElement>('[data-birthdate-note]');
+    const panel = root.querySelector<HTMLElement>('[data-birthdate-panel]');
+    const grid = root.querySelector<HTMLElement>('[data-cal-grid]');
+    const monthSelect = root.querySelector<HTMLSelectElement>('[data-cal-month]');
+    const yearSelect = root.querySelector<HTMLSelectElement>('[data-cal-year]');
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-cal-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-cal-next]');
+    if (!input || !trigger || !note || !panel || !grid || !monthSelect || !yearSelect || !prevBtn || !nextBtn) return;
+
+    const today = new Date();
+    const minDate = new Date(1900, 0, 1);
+    const cutoff = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+
+    let touched = false;
+    let selected: Date | null = null;
+    let focusDate: Date = cutoff;
+    let view = { y: cutoff.getFullYear(), m: cutoff.getMonth() };
+    let activeCell: HTMLElement | null = null;
+
+    const sameDay = (a: Date, b: Date) =>
+      a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+
+    const toIso = (d: Date) =>
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+    const eligible = (d: Date) => d >= minDate && d <= cutoff;
+
+    const clampView = (y: number, m: number) => {
+      const maxY = cutoff.getFullYear();
+      const maxM = cutoff.getMonth();
+      if (y > maxY || (y === maxY && m > maxM)) return { y: maxY, m: maxM };
+      if (y < 1900) return { y: 1900, m: 0 };
+      return { y, m };
+    };
+
+    const classify = (d: Date): { ok: boolean; reason: string | null } => {
+      if (d > today) return { ok: false, reason: 'future' };
+      if (d < minDate) return { ok: false, reason: 'old' };
+      if (d > cutoff) return { ok: false, reason: 'minor' };
+      return { ok: true, reason: null };
+    };
+
+    const ageOf = (d: Date) => {
+      let age = today.getFullYear() - d.getFullYear();
+      const beforeBirthday =
+        today.getMonth() < d.getMonth() || (today.getMonth() === d.getMonth() && today.getDate() < d.getDate());
+      if (beforeBirthday) age -= 1;
+      return age;
+    };
+
+    const formatDate = (d: Date) =>
+      `${String(d.getDate()).padStart(2, '0')} ${MONTH_LABELS[d.getMonth()]} ${d.getFullYear()}`;
+
+    const messageFor = (reason: string | null) => {
+      switch (reason) {
+        case 'minor':
+          return 'Not of age — bookings are 18+';
+        case 'future':
+          return 'Date is in the future — check the year';
+        case 'old':
+          return 'Year must be 1900 or later';
+        default:
+          return 'Not a real date — use MM/DD/YYYY';
+      }
+    };
+
+    const mask = (raw: string) => {
+      const digits = raw.replace(/\D/g, '').slice(0, 8);
+      if (digits.length <= 2) return digits;
+      if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+      return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+    };
+
+    const parse = (raw: string): Date | null => {
+      const digits = raw.replace(/\D/g, '');
+      if (digits.length !== 8) return null;
+      const month = Number(digits.slice(0, 2));
+      const day = Number(digits.slice(2, 4));
+      const year = Number(digits.slice(4));
+      const date = new Date(year, month - 1, day);
+      const real = date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+      return real ? date : null;
+    };
+
+    const setNote = (state: 'hint' | 'ok' | 'error', text: string) => {
+      note.dataset.state = state;
+      note.textContent = text;
+    };
+
+    const updateNote = () => {
+      if (selected) {
+        const { ok, reason } = classify(selected);
+        if (ok) setNote('ok', `Cleared · 18+ · born ${formatDate(selected)}`);
+        else setNote('error', messageFor(reason));
+        return;
+      }
+      if (input.value.trim() === '') {
+        setNote('hint', 'Bookings are 18+ only');
+        return;
+      }
+      if (input.value.replace(/\D/g, '').length === 8) setNote('error', 'Not a real date — use MM/DD/YYYY');
+      else if (touched) setNote('error', 'Enter your date of birth — bookings are 18+ only');
+      else setNote('hint', 'Bookings are 18+ only');
+    };
+
+    const emit = () => {
+      let value = '';
+      let ok = false;
+      let reason: string | null = null;
+      let age: number | null = null;
+      if (selected) {
+        const verdict = classify(selected);
+        ok = verdict.ok;
+        reason = verdict.reason;
+        value = toIso(selected);
+        age = ageOf(selected);
+      } else if (input.value.trim() !== '') {
+        reason = 'invalid';
+      }
+      const detail: BirthdateDetail = { value, ok, reason, age, touched };
+      root.dispatchEvent(new CustomEvent<BirthdateDetail>('birthdate:change', { bubbles: true, detail }));
+    };
+
+    const syncInvalid = () => {
+      const invalid = selected ? !classify(selected).ok : touched && input.value.trim() !== '';
+      input.setAttribute('aria-invalid', String(invalid));
+    };
+
+    const stepToEligible = (start: Date, dir: 1 | -1): Date | null => {
+      const d = new Date(start);
+      for (let i = 0; i < 400; i++) {
+        if (d < minDate || d > cutoff) return null;
+        if (eligible(d)) return d;
+        d.setDate(d.getDate() + dir);
+      }
+      return null;
+    };
+
+    const render = () => {
+      monthSelect.value = String(view.m);
+      yearSelect.value = String(view.y);
+
+      prevBtn.disabled = view.y <= 1900 && view.m <= 0;
+      nextBtn.disabled = view.y >= cutoff.getFullYear() && view.m >= cutoff.getMonth();
+
+      grid.textContent = '';
+      activeCell = null;
+
+      const head = document.createElement('div');
+      head.setAttribute('role', 'row');
+      head.className = 'grid grid-cols-7 gap-px';
+      WEEKDAY_LABELS.forEach((label, index) => {
+        const cell = document.createElement('div');
+        cell.setAttribute('role', 'columnheader');
+        cell.setAttribute('aria-label', WEEKDAY_NAMES[index]);
+        cell.className =
+          'flex h-8 items-center justify-center bg-background font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground';
+        cell.textContent = label;
+        head.appendChild(cell);
+      });
+      grid.appendChild(head);
+
+      const offset = new Date(view.y, view.m, 1).getDay();
+      const daysInMonth = new Date(view.y, view.m + 1, 0).getDate();
+
+      for (let week = 0; week < 6; week++) {
+        const row = document.createElement('div');
+        row.setAttribute('role', 'row');
+        row.className = 'grid grid-cols-7 gap-px';
+
+        for (let i = 0; i < 7; i++) {
+          const index = week * 7 + i;
+          const day = index - offset + 1;
+          const cell = document.createElement('div');
+          cell.setAttribute('role', 'gridcell');
+          cell.tabIndex = -1;
+
+          if (day < 1 || day > daysInMonth) {
+            cell.setAttribute('aria-disabled', 'true');
+            cell.className = 'h-9 bg-background';
+            row.appendChild(cell);
+            continue;
+          }
+
+          const date = new Date(view.y, view.m, day);
+          const isEligible = eligible(date);
+          const isSelected = selected !== null && sameDay(date, selected);
+          const isToday = sameDay(date, today);
+          const isFocus = sameDay(date, focusDate);
+
+          cell.textContent = String(day);
+          cell.dataset.day = String(day);
+          cell.setAttribute(
+            'aria-label',
+            `${MONTH_NAMES[view.m]} ${day}, ${view.y}${isEligible ? '' : ' — not eligible'}`,
+          );
+          if (isSelected) cell.setAttribute('aria-selected', 'true');
+          if (!isEligible) cell.setAttribute('aria-disabled', 'true');
+
+          const classes = ['flex h-9 items-center justify-center font-mono text-xs transition-colors'];
+          if (isEligible) {
+            classes.push('cursor-pointer');
+            if (isSelected) classes.push('bg-paper text-paper-foreground hover:bg-tertiary-300');
+            else if (isToday) classes.push('bg-background text-tertiary-300 hover:bg-raised');
+            else classes.push('bg-background text-foreground hover:bg-raised');
+          } else {
+            classes.push('cursor-not-allowed bg-background text-muted-foreground/30 line-through decoration-border');
+          }
+          cell.className = classes.join(' ');
+
+          if (isFocus && isEligible) {
+            cell.tabIndex = 0;
+            activeCell = cell;
+          }
+          row.appendChild(cell);
+        }
+        grid.appendChild(row);
+      }
+
+      if (!activeCell) {
+        const first = grid.querySelector<HTMLElement>('[role="gridcell"]:not([aria-disabled="true"])');
+        if (first) {
+          first.tabIndex = 0;
+          activeCell = first;
+        }
+      }
+    };
+
+    const select = (date: Date) => {
+      selected = date;
+      input.value = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}/${date.getFullYear()}`;
+      syncInvalid();
+      updateNote();
+      emit();
+      closePanel(false);
+      input.focus();
+    };
+
+    const openPanel = () => {
+      if (!panel.hidden) return;
+      if (selected) {
+        view = clampView(selected.getFullYear(), selected.getMonth());
+        focusDate = selected;
+      }
+      panel.hidden = false;
+      trigger.setAttribute('aria-expanded', 'true');
+      render();
+      activeCell?.focus();
+    };
+
+    const closePanel = (returnFocus: boolean) => {
+      if (panel.hidden) return;
+      panel.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+      if (returnFocus) trigger.focus();
+    };
+
+    const moveFocus = (days: number) => {
+      const next = new Date(focusDate);
+      next.setDate(next.getDate() + days);
+      const target = stepToEligible(next, days > 0 ? 1 : -1);
+      if (!target) return;
+      focusDate = target;
+      view = clampView(target.getFullYear(), target.getMonth());
+      render();
+      activeCell?.focus();
+    };
+
+    const shiftMonth = (delta: number) => {
+      const base = new Date(view.y, view.m + delta, 1);
+      view = clampView(base.getFullYear(), base.getMonth());
+      const target = stepToEligible(new Date(view.y, view.m, 1), 1);
+      if (target) focusDate = target;
+      render();
+      activeCell?.focus();
+    };
+
+    MONTH_LABELS.forEach((label, index) => {
+      const option = document.createElement('option');
+      option.value = String(index);
+      option.textContent = label;
+      monthSelect.appendChild(option);
+    });
+
+    for (let year = cutoff.getFullYear(); year >= 1900; year--) {
+      const option = document.createElement('option');
+      option.value = String(year);
+      option.textContent = String(year);
+      yearSelect.appendChild(option);
+    }
+
+    input.addEventListener('input', () => {
+      const masked = mask(input.value);
+      if (masked !== input.value) input.value = masked;
+      selected = parse(input.value);
+      if (selected) {
+        focusDate = selected;
+        view = clampView(selected.getFullYear(), selected.getMonth());
+      }
+      syncInvalid();
+      updateNote();
+      emit();
+      if (!panel.hidden) render();
+    });
+
+    input.addEventListener('blur', () => {
+      touched = true;
+      syncInvalid();
+      updateNote();
+      emit();
+    });
+
+    trigger.addEventListener('click', () => (panel.hidden ? openPanel() : closePanel(true)));
+
+    document.addEventListener('pointerdown', (event) => {
+      if (!panel.hidden && !root.contains(event.target as Node)) closePanel(false);
+    });
+
+    monthSelect.addEventListener('change', () => {
+      view = clampView(view.y, Number(monthSelect.value));
+      const target = stepToEligible(new Date(view.y, view.m, 1), 1);
+      if (target) focusDate = target;
+      render();
+    });
+
+    yearSelect.addEventListener('change', () => {
+      view = clampView(Number(yearSelect.value), view.m);
+      const target = stepToEligible(new Date(view.y, view.m, 1), 1);
+      if (target) focusDate = target;
+      render();
+    });
+
+    prevBtn.addEventListener('click', () => shiftMonth(-1));
+    nextBtn.addEventListener('click', () => shiftMonth(1));
+
+    grid.addEventListener('click', (event) => {
+      const cell = (event.target as HTMLElement).closest<HTMLElement>('[role="gridcell"]');
+      if (!cell || cell.getAttribute('aria-disabled') === 'true' || !cell.dataset.day) return;
+      const date = new Date(view.y, view.m, Number(cell.dataset.day));
+      if (!eligible(date)) return;
+      focusDate = date;
+      select(date);
+    });
+
+    grid.addEventListener('keydown', (event) => {
+      switch (event.key) {
+        case 'ArrowLeft':
+          event.preventDefault();
+          moveFocus(-1);
+          break;
+        case 'ArrowRight':
+          event.preventDefault();
+          moveFocus(1);
+          break;
+        case 'ArrowUp':
+          event.preventDefault();
+          moveFocus(-7);
+          break;
+        case 'ArrowDown':
+          event.preventDefault();
+          moveFocus(7);
+          break;
+        case 'Home':
+          event.preventDefault();
+          moveFocus(-focusDate.getDay());
+          break;
+        case 'End':
+          event.preventDefault();
+          moveFocus(6 - focusDate.getDay());
+          break;
+        case 'PageUp':
+          event.preventDefault();
+          shiftMonth(event.shiftKey ? -12 : -1);
+          break;
+        case 'PageDown':
+          event.preventDefault();
+          shiftMonth(event.shiftKey ? 12 : 1);
+          break;
+        case 'Enter':
+        case ' ':
+          event.preventDefault();
+          if (eligible(focusDate)) select(focusDate);
+          break;
+        case 'Escape':
+          event.preventDefault();
+          closePanel(true);
+          break;
+      }
+    });
+
+    document.addEventListener('booking:validate', () => {
+      touched = true;
+      syncInvalid();
+      updateNote();
+      emit();
+    });
+
+    input.form?.addEventListener('reset', () => {
+      selected = null;
+      touched = false;
+      focusDate = cutoff;
+      view = { y: cutoff.getFullYear(), m: cutoff.getMonth() };
+      syncInvalid();
+      updateNote();
+      emit();
+    });
+
+    updateNote();
+    emit();
+  });
+</script>

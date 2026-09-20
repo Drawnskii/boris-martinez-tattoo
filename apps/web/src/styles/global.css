@@ -197,6 +197,30 @@
     outline: 2px solid var(--color-ring);
     outline-offset: 2px;
   }
+
+  *::-webkit-scrollbar {
+    width: 0.375rem;
+    height: 0.375rem;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: var(--color-background);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted-foreground);
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-border) var(--color-background);
+    }
+  }
 }
 
 /* -----------------------------------------------------------------

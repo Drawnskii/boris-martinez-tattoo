@@ -160,13 +160,16 @@
       sceneInstance = null;
     }
 
-    const [three, vertex, fragment] = await Promise.all([
-      import('three'),
-      import('./vertex.glsl?raw'),
-      import('./fragment.glsl?raw'),
-    ]);
-    T = three;
-    sceneInstance = new MercuryScene(container, vertex.default, fragment.default);
+    /* Named destructuring lets the bundler tree-shake three.js down to
+       the handful of classes the scene actually uses. Keep each import
+       directly destructured — wrapping them in Promise.all makes Rollup
+       treat the namespace as opaque and ship the whole library. */
+    const { Timer, Vector2, WebGLRenderer, Scene, OrthographicCamera, ShaderMaterial, PlaneGeometry, Mesh } =
+      await import('three');
+    const vertex = (await import('./vertex.glsl?raw')).default;
+    const fragment = (await import('./fragment.glsl?raw')).default;
+    T = { Timer, Vector2, WebGLRenderer, Scene, OrthographicCamera, ShaderMaterial, PlaneGeometry, Mesh } as unknown as typeof ThreeNS;
+    sceneInstance = new MercuryScene(container, vertex, fragment);
 
     // Reveal the mercury drop — it fades in now that the first frame
     // is rendered, arriving in step with the hero text entrance.

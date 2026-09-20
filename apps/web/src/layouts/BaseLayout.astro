@@ -15,9 +15,10 @@ import Footer from '@components/Footer.astro';
 interface Props {
   title?: string;
   description?: string;
+  heroFont?: string;
 }
 
-const { title = SITE.title, description = SITE.description } = Astro.props;
+const { title = SITE.title, description = SITE.description, heroFont } = Astro.props;
 
 // Sidebar nav is fixed and w-56 — offset page content on lg+ screens.
 const contentOffset = NAV_CONTENT_OFFSET[NAV_LAYOUT];
@@ -31,6 +32,7 @@ const r2Origin = R2_URL ? new URL(R2_URL).origin : '';
     <meta charset="utf-8" />
     
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {heroFont && <link rel="preload" as="font" type="font/woff2" href={heroFont} crossorigin />}
     {r2Origin && <link rel="preconnect" href={r2Origin} crossorigin />}
     <link rel="preconnect" href="https://tiles.openfreemap.org" crossorigin />
     <link rel="preconnect" href="https://js.hcaptcha.com" crossorigin />
@@ -80,11 +82,11 @@ const r2Origin = R2_URL ? new URL(R2_URL).origin : '';
       <Footer />
     </div>
     {/* Reveal observer — adds .is-visible to .reveal elements as they
-        walk into view. Progressive enhancement: pre-marks anything
-        already on-screen at DOMContentLoaded so above-the-fold content
-        never flashes hidden-then-shown; falls back to instant-reveal
-        if IntersectionObserver is missing. */}
-    <script>
+        walk into view. Inlined so it runs during HTML parse, before the
+        first paint: above-the-fold content never waits on a JS request,
+        and it never flashes hidden-then-shown. Falls back to
+        instant-reveal if IntersectionObserver is missing. */}
+    <script is:inline>
       const setupReveal = () => {
         const els = Array.from(document.querySelectorAll('.reveal'));
         if (els.length === 0) return;
