@@ -16,9 +16,11 @@ interface Props {
   class?: string;
   /** Descriptive link text for SEO / screen readers. */
   title?: string;
+  /** Commission-slip class value to pre-select when the link is clicked. */
+  bookingClass?: string;
 }
 
-const { href, variant = 'paper', class: className = '', title } = Astro.props;
+const { href, variant = 'paper', class: className = '', title, bookingClass } = Astro.props;
 
 const base =
   'inline-flex items-center justify-center gap-2 font-secondary uppercase tracking-[0.12em] transition-all';
@@ -31,6 +33,6 @@ const variants: Record<'paper' | 'outline', string> = {
 };
 ---
 
-<a href={href} title={title} class:list={[base, variants[variant], className]}>
+<a href={href} title={title} data-booking-class={bookingClass} class:list={[base, variants[variant], className]}>
   <slot />
 </a>

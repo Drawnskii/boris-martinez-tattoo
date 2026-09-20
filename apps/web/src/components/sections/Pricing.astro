@@ -2,26 +2,36 @@
 import SectionHeading from '@components/SectionHeading.astro';
 import CtaButton from '@components/CtaButton.astro';
 
-// No firm numbers are published: every piece is quoted at consultation.
-// Final rates arrive with the client's supplied pricing content.
 const classes = [
   {
-    mark: 'Class I',
-    name: 'Small pieces',
-    blurb: 'Minimal marks and fine symbols — single sittings of a few hours.',
-    terms: ['Up to roughly 5 cm', 'Single sitting', 'Touch-up included'],
+    mark: 'CLASS I',
+    name: 'SMALL PIECES',
+    blurb: 'Minimal marks and fine symbols — quick single sitting.',
+    terms: ['Up to roughly 2 x 2 inches', 'Single sitting', 'Touch-up included'],
+    priceNote: 'Flat rate',
+    price: '$150',
+    cta: 'Request a quote',
+    bookingValue: 'small',
   },
   {
-    mark: 'Class II',
-    name: 'Medium pieces',
+    mark: 'CLASS II',
+    name: 'MEDIUM PIECES',
     blurb: 'Palm-to-forearm designs with room for detail and shading.',
-    terms: ['Up to roughly 15 cm', 'Design consultation', 'Single sitting', 'Touch-up included'],
+    terms: ['Up to roughly 6 inches', 'Design consultation', 'Single sitting', 'Touch-up included'],
+    priceNote: 'Range',
+    price: '$500 – $600',
+    cta: 'Request a quote',
+    bookingValue: 'medium',
   },
   {
-    mark: 'Class III',
-    name: 'Large & custom',
+    mark: 'CLASS III',
+    name: 'LARGE & CUSTOM',
     blurb: 'Sleeves, back pieces, and fully bespoke work.',
     terms: ['Custom-drawn artwork', 'Multi-sitting planning', 'Priority entry in the books'],
+    priceNote: 'On request',
+    price: 'By quotation',
+    cta: 'Contact the artist',
+    bookingValue: 'large',
   },
 ];
 ---
@@ -32,21 +42,21 @@ const classes = [
       <SectionHeading
         tag="Entry III — The Terms"
         title="Commissions"
-        subtitle="Every piece is priced at consultation — size, placement, and detail set the quote. No two entries in the register are priced alike."
+        subtitle="Published rates set the class — size, placement, and detail confirm the final quote at consultation. Large and custom work is quoted on request."
       />
     </div>
 
-    <div class="mt-14 border-t border-border">
+    <div class="mt-14 border-border">
       {classes.map((tier, i) => (
-        <article class="reveal grid gap-6 border-b border-border py-10 md:grid-cols-12 md:items-center" style={`--reveal-delay: ${i * 80}ms`}>
+        <article class={`reveal grid gap-6 ${i < classes.length - 1 ? 'border-b' : ''} border-border py-10 px-2 md:grid-cols-12 md:items-center`} style={`--reveal-delay: ${i * 80}ms`}>
           <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400 md:col-span-2">
             {tier.mark}
           </p>
-          <div class="md:col-span-4">
+          <div class="md:col-span-3">
             <h3 class="font-secondary text-xl tracking-[0.02em] text-foreground">{tier.name}</h3>
             <p class="mt-2 text-sm text-muted-foreground">{tier.blurb}</p>
           </div>
-          <ul class="space-y-2 md:col-span-4">
+          <ul class="space-y-2 md:col-span-3">
             {tier.terms.map((term) => (
               <li class="flex items-center gap-3 text-sm text-muted-foreground">
                 <span class="size-1 shrink-0 bg-tertiary-400" aria-hidden="true"></span>
@@ -54,13 +64,18 @@ const classes = [
               </li>
             ))}
           </ul>
+          <div class="md:col-span-2">
+            <p class="font-mono text-2xs uppercase tracking-[0.2em] text-tertiary-400">{tier.priceNote}</p>
+            <p class="mt-2 font-secondary text-xl tracking-[0.02em] text-foreground">{tier.price}</p>
+          </div>
           <CtaButton
             href="#booking"
             title={`Request a quote — ${tier.name} tattoo`}
             variant={i === 2 ? 'paper' : 'outline'}
-            class="px-6 py-3 text-xs md:col-span-2"
+            bookingClass={tier.bookingValue}
+            class="px-6 py-3 text-xs md:col-span-2 text-center"
           >
-            Request a quote
+            {tier.cta}
           </CtaButton>
         </article>
       ))}

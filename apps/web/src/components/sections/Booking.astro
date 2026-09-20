@@ -57,7 +57,7 @@ const inputClass =
           Commission slip
         </p>
         <p class="font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
-          Boris Martinez Tattoo
+          Boris Martínez Tattoo
         </p>
       </div>
       
@@ -77,9 +77,9 @@ const inputClass =
         <div>
           <label for="booking-size" class="mb-1.5 block font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">Approximate scale</label>
           <select id="booking-size" name="size" class={inputClass}>
-            <option value="small">Class I — small (up to ~5 cm)</option>
-            <option value="medium">Class II — medium (up to ~15 cm)</option>
-            <option value="large">Class III — large / custom</option>
+            <option value="small">Class I — Small pieces · $150</option>
+            <option value="medium">Class II — Medium pieces · $500–$600</option>
+            <option value="large">Class III — Large &amp; custom · By quotation</option>
             <option value="unsure">Not sure yet</option>
           </select>
         </div>
@@ -139,6 +139,32 @@ const inputClass =
   const captcha = document.getElementById('captcha');
   const submit = document.getElementById('submit-btn');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const bookingSize = document.getElementById('booking-size') as HTMLSelectElement | null;
+
+  document.querySelectorAll<HTMLElement>('[data-booking-class]').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const value = trigger.dataset.bookingClass;
+      if (!bookingSize || !value) return;
+
+      bookingSize.value = value;
+      bookingSize.dispatchEvent(new Event('change', { bubbles: true }));
+
+      if (!reduceMotion) {
+        const beige = getComputedStyle(document.documentElement)
+          .getPropertyValue('--color-tertiary-400')
+          .trim();
+        if (beige) {
+          bookingSize.animate([{ borderColor: beige }, { borderColor: beige }], {
+            duration: 900,
+            easing: 'ease-out',
+          });
+        }
+      }
+
+      window.setTimeout(() => bookingSize.focus({ preventScroll: true }), 350);
+    });
+  });
 
   window.onCaptchaSuccess = () => {
     if (!captcha || !submit) return;
