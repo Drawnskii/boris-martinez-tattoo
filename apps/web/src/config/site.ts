@@ -3,8 +3,8 @@ export const R2_URL = import.meta.env.PUBLIC_R2_URL.replace(/\/$/, '');
 
 export const SITE = {
   name: 'Boris Martínez',
-  title: 'Boris Martínez — Blackwork Tattoos in LA, NY & NJ',
-  description: 'Boris Martínez official portfolio. Custom blackwork tattoo artist serving Los Angeles, New York, and New Jersey.',
+  title: 'Boris Martínez — black & grey Tattoos in LA, NY & NJ',
+  description: 'Boris Martínez official portfolio. Custom black & grey tattoo artist serving Los Angeles, New York, and New Jersey.',
 } as const;
 
 export type Site = typeof SITE;
@@ -54,8 +54,8 @@ export const NAV_LINKS = [
    src/icons/. Add a new entry + an SVG file to scale this list.
    ----------------------------------------------------------------- */
 export const SOCIAL_LINKS = [
-  { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/borisMartínez__?igsi=aGY1aTdwanNrcTR1', icon: 'instagram' },
-  { id: 'threads', label: 'Threads', url: 'https://www.threads.com/@borisMartínez__?igshid=NTc4MTIwNjQ2YQ%3D%3D', icon: 'threads' },
+  { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/borismartinez__/', icon: 'instagram' },
+  { id: 'threads', label: 'Threads', url: 'https://www.threads.com/@borismartinez__/', icon: 'threads' },
 ] as const;
 
 /* -----------------------------------------------------------------

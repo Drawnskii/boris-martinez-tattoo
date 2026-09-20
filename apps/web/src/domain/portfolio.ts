@@ -1,7 +1,7 @@
 import { R2_URL } from '@config/site';
 
 export type PortfolioCategory =
-  | 'blackwork'
+  | 'black & grey'
   | 'micro-realism'
   | 'fine-line'
   | 'lettering'
@@ -42,19 +42,19 @@ export const PORTFOLIO_CATALOG: readonly PortfolioItem[] = [
     type: 'image',
     placement: 'Calf',
   },
-  // {
-  //   id: '003',
-  //   fileName: 'IMG_0545.jpg',
-  //   title: 'Animated cyclops character',
-  //   category: 'anime-cartoon',
-  //   type: 'image',
-  //   placement: 'Calf',
-  // },
+  {
+    id: '003',
+    fileName: 'IMG_0545.jpg',
+    title: 'Animated cyclops character',
+    category: 'anime-cartoon',
+    type: 'image',
+    placement: 'Calf',
+  },
   {
     id: '004',
     fileName: 'IMG_0715.jpg',
-    title: 'Blackwork flames',
-    category: 'blackwork',
+    title: 'black & grey flames',
+    category: 'black & grey',
     type: 'image',
     placement: 'Back of the hand',
     featured: true,
@@ -76,14 +76,14 @@ export const PORTFOLIO_CATALOG: readonly PortfolioItem[] = [
   //   type: 'image',
   //   placement: 'Back',
   // },
-  {
-    id: '007',
-    fileName: 'IMG_2583.jpg',
-    title: 'Animated car (Alternate angle)',
-    category: 'anime-cartoon',
-    type: 'image',
-    placement: 'Calf',
-  },
+  // {
+  //   id: '007',
+  //   fileName: 'IMG_2583.jpg',
+  //   title: 'Animated car (Alternate angle)',
+  //   category: 'anime-cartoon',
+  //   type: 'image',
+  //   placement: 'Calf',
+  // },
   {
     id: '008',
     fileName: 'IMG_3728.jpg',
@@ -104,7 +104,7 @@ export const PORTFOLIO_CATALOG: readonly PortfolioItem[] = [
     id: '010',
     fileName: 'IMG_5076.jpg',
     title: 'Chess knight and patchwork',
-    category: 'blackwork',
+    category: 'black & grey',
     type: 'image',
     placement: 'Upper arm',
   },

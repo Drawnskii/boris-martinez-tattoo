@@ -22,11 +22,7 @@ import { BASE_URL } from "@config/site"
   {/* text column rides the same .shell edges as every other section */}
   <div class="shell relative z-20 flex min-h-svh flex-col justify-between pb-12 pt-24 lg:pb-14 lg:pt-28">
     {/* meta: the role, and the footprint entered as register data */}
-    <div class="hero-strike-1 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-      <p class="flex items-center gap-3 font-mono text-2xs uppercase leading-relaxed tracking-[0.14em] text-muted-foreground md:tracking-[0.2em]">
-        <span class="inline-block size-1 bg-tertiary-400" aria-hidden="true"></span>
-        Tattoo Artist
-      </p>
+    <div class="hero-strike-1 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-end">
       <div class="sm:text-right">
         <p class="font-mono text-2xs uppercase tracking-[0.2em] text-muted-foreground">Working footprint</p>
         <p class="mt-2 font-mono text-sm uppercase tracking-[0.16em] text-foreground">Los Angeles · New Jersey · New York</p>
@@ -36,15 +32,18 @@ import { BASE_URL } from "@config/site"
     {/* the inscription */}
     <div class="py-14 lg:py-16">
       <h1 class="hero-stamp font-secondary text-[clamp(2.25rem,10.5vw,6rem)] font-bold uppercase leading-[0.95] tracking-[0.04em] text-foreground">
+        <p class="font-mono text-2xs font-normal uppercase tracking-[0.2em] text-muted-foreground mb-4 translate-x-2">Tattoo Artist</p>
         <span class="block">Boris</span>
         <span class="block">Martínez</span>
         <span class="sr-only"> — Tattoo Artist</span>
       </h1>
 
-      <div class="mt-10 flex flex-col gap-8 lg:mt-12 lg:flex-row lg:items-end lg:justify-between">
-        <p class="hero-strike-2 max-w-md text-base text-muted-foreground">I'm a Tattoo Artist who holds every piece to the highest standard, bringing singular designs onto living canvas.</p>
+      <div class="mt-5 flex flex-col gap-8 lg:mt-6">
+        <p class="hero-strike-2 max-w-md text-base text-muted-foreground">
+          Holding every piece to the highest standard, bringing singular designs onto living canvas.
+        </p>
 
-        <div class="hero-strike-3 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+        <div class="hero-strike-3 flex flex-row items-center gap-3">
           <CtaButton href="#booking" title="Book your tattoo session" class="px-8 py-3.5 text-sm">
             Book Your Session
           </CtaButton>
@@ -56,12 +55,8 @@ import { BASE_URL } from "@config/site"
     </div>
 
     {/* the hero's foot: policy left, the way down right */}
-    <div class="hero-strike-4 flex items-center justify-between font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
+    <div class="hero-strike-4 flex items-center font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground">
       <span>By appointment only</span>
-      <span class="hidden items-center gap-3 lg:inline-flex" aria-hidden="true">
-        Scroll
-        <span class="inline-block h-px w-10 bg-border"></span>
-      </span>
     </div>
   </div>
 </section>

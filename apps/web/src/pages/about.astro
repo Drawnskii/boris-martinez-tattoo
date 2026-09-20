@@ -6,7 +6,7 @@ import CtaButton from '@components/CtaButton.astro';
 import { BASE_URL } from '@config/site';
 ---
 
-<BaseLayout title="The Artist — Boris Martinez Tattoo" description="The artist's entry — Boris Martinez, a blackwork and liquid-metal tattoo artist.">
+<BaseLayout title="The Artist — Boris Martínez Tattoo" description="The artist's entry — Boris Martínez, a black & grey and liquid-metal tattoo artist.">
   <main class="shell py-16 md:py-18" style="--shell-max: 48rem">
     {/* the artist's entry in the register: article with floated plates */}
     <article>
@@ -17,22 +17,35 @@ import { BASE_URL } from '@config/site';
         </div>
         <div class="mt-5 flex items-center gap-4">
           <AssayMark serial="BM" sealed />
-          <AssayMark serial="Boris Martinez" placement="Founder" session="Blackwork" />
+          <AssayMark serial="Boris Martínez" placement="Founder" session="black & grey" />
         </div>
       </div>
 
       {/* full-width cover plate */}
-      <ImagePlaceholder label="Boris Martinez and the studio crew" class="reveal mt-10 aspect-5/6 w-full" style="--reveal-delay: 80ms" />
+      <ImagePlaceholder label="Boris Martínez and the studio crew" class="reveal mt-10 aspect-5/6 w-full" style="--reveal-delay: 80ms" />
 
       {/*
         Text blocks with floated inline plates. `flow-root` contains the
         floats; plates are full-width on mobile and float from `sm:` up.
       */}
       <div class="reveal mt-10 flow-root text-base leading-relaxed text-muted-foreground">
-        <ImagePlaceholder
+        <!-- <ImagePlaceholder
           label="The atelier"
           class="mb-4 aspect-square w-full sm:float-left sm:mr-6 sm:w-2/5"
-        />
+        /> -->
+        <video
+          id="boris-tattoo-session"
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          class="mb-4 aspect-square w-full object-cover border border-border bg-background shadow-sm sm:float-left sm:mr-6 sm:w-2/5"
+          aria-label="Video of the artist Boris Martínez tattooing"
+        >
+          <source src={`${BASE_URL}/about/videos/boris-tattoo-session.mp4`} type="video/mp4" />
+          Tu navegador no soporta video HTML5.
+        </video>
         <p>
           A move to Los Angeles with no plan — only an artist chasing a
           dream. While drawing in my room one day, I had the thought that
@@ -84,10 +97,23 @@ import { BASE_URL } from '@config/site';
       </div>
 
       <div class="reveal mt-10 flow-root text-base leading-relaxed text-muted-foreground">
-        <ImagePlaceholder
+        <!-- <ImagePlaceholder
           label="Detail, struck metal"
           class="mb-4 aspect-3/2 w-full sm:float-left sm:mr-6 sm:w-1/3"
-        />
+        /> -->
+        <video
+          id="boris-tattoo-session"
+          autoplay
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          class="mb-4 aspect-3/2 w-full object-cover border border-border bg-background shadow-sm sm:float-left sm:mr-6 sm:w-1/3"
+          aria-label="Boris Martínez shading a black & grey tattoo of the Pieta"
+        >
+          <source src={`${BASE_URL}/about/videos/boris-martinez-virgin-mary-tattoo.mp4`} type="video/mp4" />
+          Tu navegador no soporta video HTML5.
+        </video>
         <p>
           I arrived in Los Angeles as an artist searching for an
           opportunity. What I found was a family, mentors, and a path
@@ -103,7 +129,7 @@ import { BASE_URL } from '@config/site';
     </article>
 
     <div class="reveal mt-14 flex flex-wrap gap-3 border-t border-border pt-10">
-      <CtaButton href={`${BASE_URL}/`} variant="outline" title="Back to the home page — Boris Martinez Tattoo" class="px-6 py-3 text-xs">
+      <CtaButton href={`${BASE_URL}/`} variant="outline" title="Back to the home page — Boris Martínez Tattoo" class="px-6 py-3 text-xs">
         &larr; Back to the front
       </CtaButton>
       <CtaButton href={`${BASE_URL}/#booking`} title="Request a custom tattoo commission" class="px-6 py-3 text-xs">
