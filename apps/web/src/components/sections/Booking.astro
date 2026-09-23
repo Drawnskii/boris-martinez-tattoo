@@ -76,8 +76,8 @@ const errorClass = 'mt-1.5 font-mono text-2xs uppercase tracking-[0.12em] text-f
         </p>
       </div>
 
-      <div class="mt-8 grid gap-x-6 gap-y-7 sm:grid-cols-2">
-        <div data-field="name" data-state="pending">
+      <div class="mt-8 grid gap-x-6 gap-y-7 sm:grid-cols-6">
+        <div class="sm:col-span-3" data-field="name" data-state="pending">
           <label for="booking-name" class={labelClass}>Name</label>
           <input
             id="booking-name"
@@ -92,7 +92,7 @@ const errorClass = 'mt-1.5 font-mono text-2xs uppercase tracking-[0.12em] text-f
           <p id="booking-name-error" data-field-error hidden class={errorClass}></p>
         </div>
 
-        <div data-field="email" data-state="pending">
+        <div class="sm:col-span-3" data-field="email" data-state="pending">
           <label for="booking-email" class={labelClass}>Email</label>
           <input
             id="booking-email"
@@ -107,18 +107,43 @@ const errorClass = 'mt-1.5 font-mono text-2xs uppercase tracking-[0.12em] text-f
           <p id="booking-email-error" data-field-error hidden class={errorClass}></p>
         </div>
 
-        <div data-field="phone" data-state="pending">
+        <div class="sm:col-span-2" data-field="inches" data-state="pending">
+          <label for="booking-inches" class={labelClass}>Approx. scale (in)</label>
+          <div class="flex">
+            <input
+              id="booking-inches"
+              name="size_inches"
+              type="number"
+              inputmode="decimal"
+              min="0"
+              max="100"
+              step="0.5"
+              placeholder="0"
+              class:list={[inputClass, 'min-w-0 flex-1 font-mono tracking-[0.08em]']}
+              aria-describedby="booking-inches-error"
+            />
+            <span
+              class="flex w-11 shrink-0 items-center justify-center border-y border-r border-border bg-raised font-mono text-2xs uppercase tracking-[0.14em] text-muted-foreground"
+              aria-hidden="true"
+            >
+              in
+            </span>
+          </div>
+          <p id="booking-inches-error" data-field-error hidden class={errorClass}></p>
+        </div>
+
+        <div class="sm:col-span-2" data-field="phone" data-state="pending">
           <label for="booking-phone" class={labelClass}>Phone</label>
           <PhoneInput class={inputClass} />
           <p id="booking-phone-error" data-field-error hidden class={errorClass}></p>
         </div>
 
-        <div data-field="birthdate" data-state="pending">
+        <div class="sm:col-span-2" data-field="birthdate" data-state="pending">
           <label for="booking-birthdate" class={labelClass}>Date of birth</label>
           <BirthDateField inputClass={inputClass} />
         </div>
 
-        <div class="sm:col-span-2" data-field="idea" data-state="pending">
+        <div class="sm:col-span-6" data-field="idea" data-state="pending">
           <label for="booking-idea" class={labelClass}>The design</label>
           <textarea
             id="booking-idea"
@@ -162,6 +187,17 @@ const errorClass = 'mt-1.5 font-mono text-2xs uppercase tracking-[0.12em] text-f
 <style>
   [data-refusal]:not([hidden]) {
     display: flex;
+  }
+
+  [data-field='inches'] input::-webkit-outer-spin-button,
+  [data-field='inches'] input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  [data-field='inches'] input {
+    appearance: textfield;
+    -moz-appearance: textfield;
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -236,6 +272,12 @@ const errorClass = 'mt-1.5 font-mono text-2xs uppercase tracking-[0.12em] text-f
       const row = rowFor('phone');
       return !!row && digitsIn(row) >= 7;
     },
+    inches: () => {
+      const raw = controlFor('inches')?.value.trim() ?? '';
+      if (raw === '') return true;
+      const value = Number(raw);
+      return Number.isFinite(value) && value >= 0 && value <= 100;
+    },
     idea: () => (controlFor('idea')?.value.trim().length ?? 0) >= 10,
   };
 
@@ -243,6 +285,7 @@ const errorClass = 'mt-1.5 font-mono text-2xs uppercase tracking-[0.12em] text-f
     name: 'Enter your name',
     email: 'Enter a valid email — the studio replies there',
     phone: 'Enter a reachable phone number',
+    inches: 'Enter a scale from 0 to 100 inches — leave it blank if unsure',
     idea: 'Describe the design, placement, and size — a sentence is enough',
   };
 
@@ -263,7 +306,7 @@ const errorClass = 'mt-1.5 font-mono text-2xs uppercase tracking-[0.12em] text-f
     if (control) control.setAttribute('aria-invalid', String(!valid && touched));
   };
 
-  (['name', 'email', 'phone', 'idea'] as const).forEach((key) => {
+  (['name', 'email', 'inches', 'phone', 'idea'] as const).forEach((key) => {
     const row = rowFor(key);
     if (!row) return;
     row.addEventListener('input', () => updateField(key));
@@ -296,14 +339,14 @@ const errorClass = 'mt-1.5 font-mono text-2xs uppercase tracking-[0.12em] text-f
   });
 
   const validateAll = () => {
-    (['name', 'email', 'phone', 'idea'] as const).forEach((key) => {
+    (['name', 'email', 'inches', 'phone', 'idea'] as const).forEach((key) => {
       touchedFields.add(key);
       updateField(key);
     });
 
     document.dispatchEvent(new CustomEvent('booking:validate'));
 
-    const allValid = birthdateOk && (['name', 'email', 'phone', 'idea'] as const).every((key) => checks[key]?.() ?? true);
+    const allValid = birthdateOk && (['name', 'email', 'inches', 'phone', 'idea'] as const).every((key) => checks[key]?.() ?? true);
     if (!allValid) {
       form?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
     }
