@@ -1,0 +1,46 @@
+name: Deploy Boris Martinez Tattoo Web to Cloudflare
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  deployments: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.13.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13'
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm --filter @boris-martinez-tattoo/web build
+        env:
+          PUBLIC_ASTRO_SITE: ${{ vars.PUBLIC_ASTRO_SITE || 'https://boris-martinez-website.pages.dev' }}
+          PUBLIC_ASTRO_BASE: ${{ vars.PUBLIC_ASTRO_BASE || '/' }}
+          PUBLIC_NAV_LAYOUT: ${{ vars.PUBLIC_NAV_LAYOUT || 'left' }}
+          PUBLIC_R2_URL: ${{ vars.PUBLIC_R2_URL }}
+          PUBLIC_WEB3FORMS_KEY: ${{ vars.PUBLIC_WEB3FORMS_KEY }}
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy apps/web/dist --project-name=boris-martinez-website
