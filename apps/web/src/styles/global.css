@@ -84,7 +84,6 @@
     "Times New Roman", serif;
   --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono",
     "SFMono-Regular", Menlo, Consolas, monospace;
-  --font-suisse: "Suisse Int'l", "Archivo", ui-sans-serif, system-ui, sans-serif;
 
   /* ---------- Font-size scale (with line-heights) ---------- */
   --text-2xs: 0.625rem;
@@ -145,14 +144,6 @@
      ----------------------------------------------------------------- */
   --shell-max: 72rem;
   --shell-pad: 1.5rem;
-}
-
-@font-face {
-  font-family: "Suisse Int'l";
-  src: url("/fonts/suisse-intl/SuisseIntl-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
 }
 
 /* -----------------------------------------------------------------
