@@ -164,16 +164,23 @@
        the handful of classes the scene actually uses. Keep each import
        directly destructured — wrapping them in Promise.all makes Rollup
        treat the namespace as opaque and ship the whole library. */
-    const { Timer, Vector2, WebGLRenderer, Scene, OrthographicCamera, ShaderMaterial, PlaneGeometry, Mesh } =
-      await import('three');
-    const vertex = (await import('./vertex.glsl?raw')).default;
-    const fragment = (await import('./fragment.glsl?raw')).default;
-    T = { Timer, Vector2, WebGLRenderer, Scene, OrthographicCamera, ShaderMaterial, PlaneGeometry, Mesh } as unknown as typeof ThreeNS;
-    sceneInstance = new MercuryScene(container, vertex, fragment);
+    try {
+      const { Timer, Vector2, WebGLRenderer, Scene, OrthographicCamera, ShaderMaterial, PlaneGeometry, Mesh } =
+        await import('three');
+      const vertex = (await import('./vertex.glsl?raw')).default;
+      const fragment = (await import('./fragment.glsl?raw')).default;
+      T = { Timer, Vector2, WebGLRenderer, Scene, OrthographicCamera, ShaderMaterial, PlaneGeometry, Mesh } as unknown as typeof ThreeNS;
+      sceneInstance = new MercuryScene(container, vertex, fragment);
 
-    // Reveal the mercury drop — it fades in now that the first frame
-    // is rendered, arriving in step with the hero text entrance.
-    container.style.opacity = '1';
+      // Reveal the mercury drop — it fades in now that the first frame
+      // is rendered, arriving in step with the hero text entrance.
+      container.style.opacity = '1';
+    } catch (err) {
+      // No WebGL / failed module load — the velvet ground behind the
+      // canvas is a deliberate fallback, so just remove the dead layer.
+      console.warn('[shader] init failed, falling back to static ground', err);
+      container.style.display = 'none';
+    }
   };
 
   const schedule = () => {
