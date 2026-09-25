@@ -8,7 +8,7 @@ import '@fontsource/archivo/500.css';
 import '@fontsource/archivo/600.css';
 import '@fontsource/jetbrains-mono/400.css';
 import '@fontsource/jetbrains-mono/500.css';
-import { SITE, NAV_LAYOUT, NAV_CONTENT_OFFSET, BASE_URL, R2_URL } from '@config/site';
+import { SITE, NAV_LAYOUT, NAV_CONTENT_OFFSET, BASE_URL, R2_URL, SITE_URL } from '@config/site';
 import Navbar from '@components/Navbar.astro';
 import Footer from '@components/Footer.astro';
 
@@ -24,6 +24,9 @@ const { title = SITE.title, description = SITE.description, heroFont } = Astro.p
 const contentOffset = NAV_CONTENT_OFFSET[NAV_LAYOUT];
 
 const r2Origin = R2_URL ? new URL(R2_URL).origin : '';
+
+// Canonical URL — always the production origin, plus the current path.
+const canonicalUrl = new URL(Astro.url.pathname, SITE_URL).href;
 ---
 
 <!doctype html>
@@ -50,21 +53,66 @@ const r2Origin = R2_URL ? new URL(R2_URL).origin : '';
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
 
+    <link rel="canonical" href={canonicalUrl} />
+
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content=`${BASE_URL}/og-image.png` />
+    <meta property="og:image" content=`${SITE_URL}/og-image.png` />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${SITE.name} — custom black & grey tattoo artist · Los Angeles, New Jersey, New York`} />
+    <meta property="og:image:alt" content={`${SITE.name} — custom black & grey tattoo artist · Nolita & SoHo, NYC`} />
     <meta property="og:site_name" content="Boris Martínez Tattoo Artist" />
 
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content=`${BASE_URL}/og-image.png` />
-    <meta property="twitter:image:alt" content={`${SITE.name} — custom black & grey tattoo artist · Los Angeles, New Jersey, New York`} />
+    <meta property="twitter:image" content=`${SITE_URL}/og-image.png` />
+    <meta property="twitter:image:alt" content={`${SITE.name} — custom black & grey tattoo artist · Nolita & SoHo, NYC`} />
+
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "TattooShop",
+        "@id": "https://borismartinez.ink/#studio",
+        "name": "Boris Martínez Tattoo Artist",
+        "url": "https://borismartinez.ink",
+        "image": "https://borismartinez.ink/og-image.png",
+        "telephone": "+1-818-351-6420",
+        "email": "martinezzboris@gmail.com",
+        "priceRange": "$$$",
+        "containedInPlace": {
+          "@type": "TattooShop",
+          "name": "Blindreason Tattoo"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "258 Elizabeth St",
+          "addressLocality": "New York",
+          "addressRegion": "NY",
+          "postalCode": "10012",
+          "addressCountry": "US"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 40.7237,
+          "longitude": -73.9936
+        },
+        "areaServed": [
+          { "@type": "AdministrativeArea", "name": "Nolita, Manhattan" },
+          { "@type": "AdministrativeArea", "name": "SoHo, Manhattan" },
+          { "@type": "City", "name": "New York" }
+        ],
+        "knowsAbout": [
+          "Black and Grey Tattoos",
+          "Micro-Realism",
+          "Fine Line Tattoos",
+          "Custom Tattoo Design"
+        ]
+      }
+    </script>
+    
     
     {/* Flag <html> as JS-capable BEFORE the body paints, so the reveal
         stylesheet knows it can hide .reveal elements safely. Without

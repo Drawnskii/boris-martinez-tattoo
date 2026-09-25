@@ -1,10 +1,15 @@
 export const BASE_URL = import.meta.env.BASE_URL.replace(/\/$/, '');
 export const R2_URL = import.meta.env.PUBLIC_R2_URL.replace(/\/$/, '');
 
+/* Canonical production origin — used for the canonical tag, OG/Twitter
+   images, and the JSON-LD entity id. Matches the PUBLIC_ASTRO_SITE value
+   set in the deploy pipeline. */
+export const SITE_URL = 'https://borismartinez.ink';
+
 export const SITE = {
   name: 'Boris Martínez',
-  title: 'Boris Martínez — black & grey Tattoos in LA, NY & NJ',
-  description: 'Boris Martínez official portfolio. Custom black & grey tattoo artist serving Los Angeles, New York, and New Jersey.',
+  title: 'Boris Martínez — Black & Grey Tattoo Artist in Nolita & SoHo, NYC',
+  description: 'Boris Martínez, custom black & grey tattoo artist at Blindreason Tattoo in Nolita, next to SoHo, NYC. Micro-realism and fine line by appointment only.',
 } as const;
 
 export type Site = typeof SITE;
